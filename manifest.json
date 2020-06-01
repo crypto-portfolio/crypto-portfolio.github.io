@@ -1,0 +1,20 @@
+ {
+  "name": "Crypto",
+  "short_name": "Crypto",
+  
+  "icons": [ {
+      "src": "https://raw.githubusercontent.com/crypto-portfolio/crypto-portfolio.github.io/master/og-img.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }],
+  
+  "start_url": "index.html",
+  "display": "fullscreen",
+  "background_color": "#ffffff",
+  "theme_color": "#084C65",
+  
+  "permissions": [
+  "background",
+  "periodic-background-sync"
+]
+}
