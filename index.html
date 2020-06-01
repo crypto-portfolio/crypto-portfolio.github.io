@@ -215,43 +215,47 @@ if (location.protocol !== "https:") {
             		var f = false;
             		var myurl = null;
 
-                if (!tsyms) {
-                    tsyms = "";
-                    var regex = /[?&]([^=#]+)=([^&#]*)/g,
-                        myurl = window.location.href,
-                        match;
+                
+                 var ltsyms = "";
+                 var lparams = [];
+                 
+                 var regex = /[?&]([^=#]+)=([^&#]*)/g,
+                     myurl = window.location.href,
+                     match;
 
-                    
+                 
 
-                    while (match = regex.exec(myurl)) {
-                        params[match[1]] = match[2];
+                 while (match = regex.exec(myurl)) {
+                     lparams[match[1]] = match[2];
 
-                        if (match[1] != 'fsym') {
-                            coinsowned.push(match[1]);
-                            tsyms = tsyms + match[1] + ",";
-                        }
+                     if (match[1] != 'fsym') {
+                         coinsowned.push(match[1]);
+                         ltsyms = ltsyms + match[1] + ",";
+                     }
 
-                        f = true;
-                    }
+                     f = true;
+                 }
 
-                    if (!f) {
-                    	 
-                    	/*
-                        fsym = 'EUR';
-                        params['ETH'] = 0.137;
-                        params['ADA'] = 135.86300000;
-                        tsyms = 'ETH,ADA'
-                        coinsowned[0] = 'ETH';
-                        coinsowned[1] = 'ADA';
-                        */
+                 if (!f) {
+                 	 
+                 	/*
+                     fsym = 'EUR';
+                     params['ETH'] = 0.137;
+                     params['ADA'] = 135.86300000;
+                     tsyms = 'ETH,ADA'
+                     coinsowned[0] = 'ETH';
+                     coinsowned[1] = 'ADA';
+                     */
 
-                    } else {
-                    	  fsym = params["fsym"];
-                    	   url = "https://min-api.cryptocompare.com/data/price?fsym=" + fsym + "&tsyms=" + tsyms;
-                        
-                    }
+                 } else {
+                	 	tsyms = ltsyms;
+                	 	params = lparams;
+                 	  fsym = params["fsym"];
+                 	   url = "https://min-api.cryptocompare.com/data/price?fsym=" + fsym + "&tsyms=" + tsyms;
+                     
+                 }
 
-                }
+             
                 
                 if(params.fsym){
                 		delete params.fsym;
