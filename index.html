@@ -12,6 +12,8 @@ if (location.protocol == "http:") {
   location.protocol = "https:";
 }
 
+
+		console.log('Initializing parameters');
         var price = null;
         var showprice = null;
         var updateinterval = 10000;
@@ -38,8 +40,13 @@ if (location.protocol == "http:") {
 
         var sw = null;
 
+        console.log('Check service worker');
+        
         if ("serviceWorker" in navigator) {
-	        		
+	    
+            
+            console.log('Service worker seems to be present');
+            
         	navigator.serviceWorker.addEventListener('message', function(event) {
 	        	    
 	        	    if(event.data.oldprice && !lastprice){
