@@ -129,6 +129,12 @@ if (location.protocol == "http:") {
             scales.push(Math.random() * 1.9 + 0.2);
         }
 
+        function current(){
+            showprice = price;
+            ddp = 0;
+            dp = 0;
+        }
+        
         function setAnimation(index, speed) {
 
             var scale = scales[index];
@@ -340,8 +346,7 @@ if (location.protocol == "http:") {
 
             }
 
-            //console.log("newdp: " + newdp + " dp: " + dp + ", ddp: " + ddp);
-
+            
             showprice = showprice + dp;
             animateStep(showprice, dp);
 
@@ -368,12 +373,9 @@ if (location.protocol == "http:") {
                 var ws = new WebSocket("wss://streamer.cryptocompare.com/socket.io/?EIO=3&transport=websocket");
 
                 ws.onopen = function() {
-                    // Web Socket is connected, send data using send()
-                    //var t = '42["SubAdd",{"subs":["0~Cryptsy~ADA~USD","0~BTCChina~ADA~USD","0~Bitstamp~ADA~USD","0~OKCoin~ADA~USD","0~Coinbase~ADA~USD","0~Poloniex~ADA~USD","0~Cexio~ADA~USD","0~BTCE~ADA~USD","0~BitTrex~ADA~USD","0~Kraken~ADA~USD","0~Bitfinex~ADA~USD","0~LocalBitcoins~ADA~USD","0~itBit~ADA~USD","0~HitBTC~ADA~USD","0~Coinfloor~ADA~USD","0~Huobi~ADA~USD","0~LakeBTC~ADA~USD","0~Coinsetter~ADA~USD","0~CCEX~ADA~USD","0~MonetaGo~ADA~USD","0~Gatecoin~ADA~USD","0~Gemini~ADA~USD","0~CCEDK~ADA~USD","0~Exmo~ADA~USD","0~Yobit~ADA~USD","0~BitBay~ADA~USD","0~QuadrigaCX~ADA~USD","0~BitSquare~ADA~USD","0~TheRockTrading~ADA~USD","0~bitFlyer~ADA~USD","0~Quoine~ADA~USD","0~LiveCoin~ADA~USD","0~WavesDEX~ADA~USD","0~Lykke~ADA~USD","0~Remitano~ADA~USD","0~Coinroom~ADA~USD","0~Abucoins~ADA~USD","0~TrustDEX~ADA~USD"]}]';
-
+ 
                     this.send(t);
 
-                    //"
                     console.log("Message is sent...");
                 };
 
@@ -397,6 +399,14 @@ if (location.protocol == "http:") {
 
 
         }
+        
+        document.addEventListener('touchstart', function (e) {
+		
+		current();
+		
+		
+		
+		  }, false);
         
         
      
@@ -471,7 +481,7 @@ body {
 </style>
 </head>
 
-<body>
+<body onkeydown="current()">
 	<div id="clouds">
 		<div class="cloud x1"></div>
 		<div class="cloud x2"></div>
