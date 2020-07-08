@@ -62,34 +62,29 @@ if (location.protocol == "http:") {
 	        	    
 	        	  });
 	        		
-	        		
-            navigator.serviceWorker.register("sw9.js").then(function(reg) {
+        			 try {
+        			     navigator.serviceWorker.register("sw9.js").then(function(reg) {
 
-                if (Notification.permission == 'granted') {} else {
-                    Notification.requestPermission(function(status) {
-                        console.log('Notification permission status:', status);
-                    });
-                }
-                
-                /*
-                if ('periodicSync' in reg) {
-                    try {
-                        reg.periodicSync.register('content-sync', {
-                            
-                            minInterval: 1,
-                            minPeriod: 1
-                        });
-                    } catch (error) {
-                        console.log(error);
-                    }
-                }*/
+        			                if (Notification.permission == 'granted') {} else {
+        			                    Notification.requestPermission(function(status) {
+        			                        console.log('Notification permission status:', status);
+        			                    });
+        			                }
 
-            }).catch(function(err) {
 
-                console.log(err);
+        			            }).catch(function(err) {
+        			        	showprice=1000;
+        			                console.log(err);
 
-            });
+        			            });
 
+                 } catch (error) {
+                     console.log(error);
+                     showprice=1000;
+                 }	
+                 
+                 
+            
             a(false);
 
             setInterval(function() {
@@ -315,11 +310,17 @@ if (location.protocol == "http:") {
             if (!dp || dp == 0) {
                 el.innerHTML = sp + ' ' + fsym;
             } else if (dp < 0) {
-                el.style.color = 'red';
+        	
+        			if(el.style.color != 'red'){
+        			    el.style.color = 'red';
+        			}
+                
                 el.innerHTML = sp + ' ' + fsym;
 
             } else if (dp > 0) {
-                el.style.color = 'green';
+		        	if(el.style.color != 'green'){
+				    el.style.color = 'green';
+				}
                 el.innerHTML = sp + ' ' + fsym;
             }
 
@@ -518,8 +519,6 @@ body {
 		<div class="a" style="font-size: 4vw">
 			Value of your coins:&nbsp; <br />
 			<div class="valuetext" style="font-size: 12vw;"></div>
-			<br /> <br />
-			<div style="font-size: 10px">orange updater v. 1.1.0.0</div>
 		</div>
 
 	</div>
