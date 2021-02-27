@@ -347,6 +347,10 @@ if (location.protocol == "http:") {
             
             var el = document.getElementsByClassName("valuetext")[0];
 
+            if(showprice == 0){
+                return;
+            }
+            
             var sp = showprice['total'];
 
             if (!sp) {
