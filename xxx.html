@@ -348,7 +348,9 @@ if (location.protocol == "http:") {
             var el = document.getElementsByClassName("valuetext")[0];
 
             if(showprice == null){
-                return;
+                setTimeout(function() {
+                    requestAnimationFrame(b);
+                }, 5);
             }
             
             var sp = showprice['total'];
