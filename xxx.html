@@ -221,9 +221,7 @@ if (location.protocol == "http:") {
                 }
                 
                 
-                newdp[key] = (parsedPrices[key] - showprice[key]) * 1000 / interval;
-                newdp[key] = newdp[key] / spd;
-               
+                
 
                 
                 ddp[key] = (newdp[key] - dp[key]) / (updateinterval * spd / 1000);
@@ -250,6 +248,10 @@ if (location.protocol == "http:") {
                     		showprice[key] = lastprice[key];
                     }
                 }
+                
+                newdp[key] = (parsedPrices[key] - showprice[key]) * 1000 / interval;
+                newdp[key] = newdp[key] / spd;
+               
                 
             }
             
