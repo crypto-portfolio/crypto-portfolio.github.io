@@ -1,1 +1,600 @@
-<h1>a</h1>
+
+<html>
+
+<head>
+<link rel="manifest" href="manifest.json" />
+
+<script src="sw9.js"></script>
+
+<script>
+
+if (location.protocol == "http:") {
+  location.protocol = "https:";
+}
+
+
+		console.log('Initializing parameters');
+        var price = null;
+        var showprice = null;
+        var updateinterval = 10000;
+        var initialprice = null;
+        var fsym = "";
+        var tsyms = null;
+        var coinsowned = [];
+        var ndigits = 6;
+
+        var params = [];
+        var url = null;
+
+        // time in which to expect an update
+        var interval = 30000;
+        var spd = 100;
+        var dp = [];
+        var newdp = [];
+        var ddp = [];
+        var lastprice = null;
+
+        var nclouds = 40;
+        var randomoffsets = [];
+        var scales = [];
+
+        var sw = null;
+
+        console.log('Check service worker');
+        
+        if ("serviceWorker" in navigator) {
+	    
+            
+            console.log('Service worker seems to be present');
+            
+        	navigator.serviceWorker.addEventListener('message', function(event) {
+	        	    
+	        	    if(event.data.oldprice && !lastprice){
+	        	    		lastprice = event.data.oldprice;
+	        	    		
+	        	    		params = event.data.coins;
+	        	    		url = event.data.url;
+	        	    		
+		        	    a(true);
+	        	    	
+	        	    }
+	        	    
+	        	    
+	        	  });
+	        		
+        			 try {
+        			     navigator.serviceWorker.register("sw9.js").then(function(reg) {
+
+        			                if (Notification.permission == 'granted') {} else {
+        			                    Notification.requestPermission(function(status) {
+        			                        console.log('Notification permission status:', status);
+        			                    });
+        			                }
+
+
+        			            }).catch(function(err) {
+        			                
+        			                
+        			        	showprice=[];
+        			        	showprice['total'] = 1;
+        			        	showprice['ADA'] = 1;
+        			        	showprice['ERG'] = 1;
+        			        	
+        			                console.log(err);
+
+        			            });
+
+                 } catch (error) {
+                     console.log(error);
+                     showprice=[];
+			        	showprice['total'] = 1;
+			        	showprice['ADA'] = 1;
+			        	showprice['ERG'] = 1;
+			        	
+                 }	
+                 
+                 
+            
+            a(false);
+
+            setInterval(function() {
+                a(true);
+            }, updateinterval);
+
+            
+            
+            
+            
+        }
+
+        
+        
+        const registration = navigator.serviceWorker.ready;
+        
+        
+        registration.then(function(reg)
+     	{
+        		if ('periodicSync' in reg) {
+                try {
+                    reg.periodicSync.register('content-sync', {
+                        
+                        minInterval: 1,
+                        minPeriod: 1
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+     	
+     	});
+        
+        		
+        		
+       
+        
+        
+        
+        for (i = 0; i < nclouds; i++) {
+            randomoffsets.push(Math.random());
+            scales.push(Math.random() * 1.9 + 0.2);
+        }
+
+        function current(){
+            if(price != null){
+                for (let [key, value] of Object.entries(price)) {
+                    showprice[key] = price[key];
+                    ddp[key] = 0;
+                    dp[key] = 0;
+                }
+                
+            }
+            
+        }
+        
+        function setAnimation(index, speed) {
+
+            var scale = scales[index];
+
+            speed = (speed / scale) * 3;
+
+            var css = '.x' + index + ' {left: ' + (index - 2) * (1600 / nclouds) + 'px;' +
+                '-webkit-transform: scale(' + scale + ');' +
+                '-moz-transform: scale(' + scale + ');' +
+                'transform: scale(' + scale + ');opacity: ' + scale + ';}',
+
+                head = document.head || document.getElementsByTagName('head')[0],
+                style = document.createElement('style');
+
+            style.type = 'text/css';
+            if (style.styleSheet) {
+                style.styleSheet.cssText = css;
+            } else {
+                style.appendChild(document.createTextNode(css));
+            }
+
+            head.appendChild(style);
+
+        }
+
+        function animateStep(_price, _dp) {
+
+            if(!initialprice){
+                return;
+            }
+            for (i = 1; i <= nclouds; i++) {
+                var el = document.getElementsByClassName("x" + i)[0];
+
+                pp = (((_price['total'] - initialprice['total']) / initialprice['total']) * 4000000) * scales[i];
+                pp = pp + randomoffsets[i] * 3110 + 10000000;
+
+                newtop = (pp % 3110 - 200).toFixed(0) + 'px'
+
+                if (!(newtop === el.style.top)) {
+                    el.style.top = (pp % 3110 - 200).toFixed(0) + 'px';
+
+                }
+
+            }
+        }
+
+        function updatePrice(parsedPrice, rcoins, rurl, rprice, parsedPrices) {
+
+            for (let [key, value] of Object.entries(parsedPrices)) {
+                
+				if(price == null){
+                    price = [];
+                }
+				if(newdp == null){
+				    newdp = [];
+				}
+                if(initialprice == null){
+                    initialprice = [];
+                }
+                
+                if(lastprice == null){
+                    lastprice = [];
+                }
+				
+                
+                if(!lastprice[key]){
+                    lastprice[key] = parsedPrices[key];
+                }
+                
+                
+                newdp[key] = (parsedPrices[key] - showprice[key]) * 1000 / interval;
+                newdp[key] = newdp[key] / spd;
+               
+
+                
+                ddp[key] = (newdp[key] - dp[key]) / (updateinterval * spd / 1000);
+                price[key] = parsedPrices[key];
+
+                if (initialprice[key] == null) {
+                    initialprice[key] = price[key];
+                }
+
+                if(!showprice){
+                    showprice = [];
+                }
+                
+                if (showprice[key] == null && lastprice[key] != null) {
+                	
+                		showprice[key] = Number(price)[key] - dp[key] * 5000;
+                    dp[key] = Number(price[key]) / 5000000;
+                    
+                    if(lastprice[key] != null){
+                    		
+                    		newdp[key] = (price[key] - lastprice[key]) * 1000 / interval;
+                    		dp[key] = 0;
+                    		ddp[key] = (newdp[key]) / (100 * updateinterval * spd[key] / 1000);
+                    		showprice[key] = lastprice[key];
+                    }
+                }
+                
+            }
+            
+            
+
+        }
+
+        function a(rs) {
+
+            try {
+            	
+            		var f = false;
+            		var myurl = null;
+
+                
+                 var ltsyms = "";
+                 var lparams = [];
+                 
+                 var regex = /[?&]([^=#]+)=([^&#]*)/g,
+                     myurl = window.location.href,
+                     match;
+
+                 
+
+                 while (match = regex.exec(myurl)) {
+                     lparams[match[1]] = match[2];
+
+                     if (match[1] != 'fsym') {
+                         coinsowned.push(match[1]);
+                         ltsyms = ltsyms + match[1] + ",";
+                     }
+
+                     f = true;
+                 }
+
+                 if (!f) {
+                 	 
+                 	/*
+                     fsym = 'EUR';
+                     params['ETH'] = 0.137;
+                     params['ADA'] = 135.86300000;
+                     tsyms = 'ETH,ADA'
+                     coinsowned[0] = 'ETH';
+                     coinsowned[1] = 'ADA';
+                     */
+
+                 } else {
+                	 	tsyms = ltsyms;
+                	 	params = lparams;
+                 	  fsym = params["fsym"];
+                 	   url = "https://min-api.cryptocompare.com/data/price?fsym=" + fsym + "&tsyms=" + tsyms;
+                     
+                 }
+
+             
+                
+                if(params.fsym){
+                		delete params.fsym;
+                }
+                
+                
+               
+                if (navigator.serviceWorker.controller) {
+                	console.log('sending emty message to worker');
+                		if(!f){
+                			navigator.serviceWorker.controller.postMessage({
+                            });
+                		}
+                		else{
+                			var m = {
+                                    'url': url,
+                                    'coins': params
+                                };
+                			console.log('sending message to worker: ' + m);
+                			navigator.serviceWorker.controller.postMessage(m);
+                		}
+                    
+                }
+				
+                if(rs){
+                		retrieveStock(updatePrice, params, url);
+                }
+
+
+            } catch (err) {
+                console.log(err);
+            }
+        }
+
+        function b() {
+
+            if(dp == null){
+               dp = [];
+            }
+            
+            var el = document.getElementsByClassName("valuetext")[0];
+
+            var sp = showprice['total'];
+
+            if (!sp) {
+                setTimeout(function() {
+                    requestAnimationFrame(b);
+                }, 5);
+                return;
+            }
+
+            sp = sp.toPrecision(ndigits);
+
+            
+            
+            
+            if (!dp['total'] || dp['total'] == 0) {
+                el.innerHTML = sp + ' ' + fsym;
+            } else if (dp['total'] < 0) {
+        	
+        			if(el.style.color != 'red'){
+        			    el.style.color = 'red';
+        			}
+                
+                el.innerHTML = sp + ' ' + fsym;
+
+            } else if (dp['total'] > 0) {
+		        	if(el.style.color != 'green'){
+				    el.style.color = 'green';
+				}
+                el.innerHTML = sp + ' ' + fsym;
+            }
+
+
+            for (let [key, value] of Object.entries(showprice)) {
+                
+                if(!dp[key] && dp[key] != 0){
+                    dp[key] =  .001 / spd;
+                }
+                
+                if (newdp[key] != null) {
+                    if (ddp[key] > 0) {
+                        if (dp[key] < newdp[key]) {
+                            dp[key] = dp[key] + ddp[key];
+                        }
+
+                    } else if (ddp[key] < 0) {
+                        if (dp[key] > newdp[key]) {
+                            dp[key] = dp[key] + ddp[key];
+                        }
+                    }
+
+                }
+
+                
+                showprice[key] = showprice[key] + dp[key];
+                
+                
+            }
+            
+            
+            
+            animateStep(showprice, dp);
+
+            setTimeout(function() {
+                requestAnimationFrame(b);
+            }, 5);
+
+        }
+
+        window.onload = function() {
+            for (var i = 1; i <= nclouds; i++) {
+                setAnimation(i, 10);
+            }
+
+            requestAnimationFrame(b);
+
+
+            return;
+
+            if ("WebSocket" in window) {
+
+                // Let us open a web socket
+                var ws = new WebSocket("wss://streamer.cryptocompare.com/socket.io/?EIO=3&transport=websocket");
+
+                ws.onopen = function() {
+ 
+                    this.send(t);
+
+                    console.log("Message is sent...");
+                };
+
+                ws.onmessage = function(evt) {
+                    var received_msg = evt.data;
+                    console.log("Message is received... + " + evt.data);
+                };
+
+                ws.onclose = function() {
+                    // websocket is closed.
+                    console.log("Connection is closed...");
+                };
+
+                window.onbeforeunload = function(event) {
+                    socket.close();
+                };
+            } else {
+                // The browser doesn't support WebSocket
+                console.log("WebSocket NOT supported by your Browser!");
+            }
+
+
+        }
+        
+        document.addEventListener('touchstart', function (e) {
+		
+		current();
+		
+		
+		
+		  }, false);
+        
+        
+     
+    </script>
+
+<style>
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	/*To hide the horizontal scroller appearing during the animation*/
+	overflow: hidden;
+	background: #c9dbe9;
+}
+
+.cloud {
+	width: 200px;
+	height: 60px;
+	background: #fff;
+	border-radius: 200px;
+	-moz-border-radius: 200px;
+	-webkit-border-radius: 200px;
+	z-index: -1000;
+	position: absolute;
+}
+
+.cloud:before, .cloud:after {
+	content: '';
+	position: absolute;
+	background: #fff;
+	width: 100px;
+	height: 80px;
+	position: absolute;
+	top: -15px;
+	left: 10px;
+	z-index: -1000;
+	border-radius: 100px;
+	-moz-border-radius: 100px;
+	-webkit-border-radius: 100px;
+}
+/*
+.cloud{
+	animation: move 3s infinite;
+}
+@keyframes move {
+  100% {
+     transform: translate(-200px, 1000px);
+  }
+*/
+.cloud, .cloud:before, .cloud:after { //
+	box-shadow: 0 0 3px 3px #ffffff;
+}
+
+.cloud:before {
+	-webkit-transform: rotate(70deg);
+	transform: rotate(70deg);
+	-moz-transform: rotate(70deg);
+}
+
+.cloud:after {
+	width: 120px;
+	height: 120px;
+	top: -55px;
+	left: auto;
+	right: 15px;
+	-webkit-transform: rotate(33deg);
+	transform: rotate(33deg);
+	-moz-transform: rotate(33deg);
+}
+</style>
+</head>
+
+<body onkeydown="current()">
+	<div id="clouds">
+		<div class="cloud x1"></div>
+		<div class="cloud x2"></div>
+		<div class="cloud x3"></div>
+		<div class="cloud x4"></div>
+		<div class="cloud x5"></div>
+		<div class="cloud x6"></div>
+		<div class="cloud x7"></div>
+		<div class="cloud x8"></div>
+		<div class="cloud x9"></div>
+		<div class="cloud x10"></div>
+		<div class="cloud x11"></div>
+		<div class="cloud x12"></div>
+		<div class="cloud x13"></div>
+		<div class="cloud x14"></div>
+		<div class="cloud x15"></div>
+		<div class="cloud x16"></div>
+		<div class="cloud x17"></div>
+		<div class="cloud x18"></div>
+		<div class="cloud x19"></div>
+		<div class="cloud x20"></div>
+		<div class="cloud x21"></div>
+		<div class="cloud x22"></div>
+		<div class="cloud x23"></div>
+		<div class="cloud x24"></div>
+		<div class="cloud x25"></div>
+		<div class="cloud x26"></div>
+		<div class="cloud x27"></div>
+		<div class="cloud x28"></div>
+		<div class="cloud x29"></div>
+		<div class="cloud x30"></div>
+		<div class="cloud x31"></div>
+		<div class="cloud x32"></div>
+		<div class="cloud x33"></div>
+		<div class="cloud x34"></div>
+		<div class="cloud x35"></div>
+		<div class="cloud x36"></div>
+		<div class="cloud x37"></div>
+		<div class="cloud x38"></div>
+		<div class="cloud x39"></div>
+		<div class="cloud x40"></div>
+	</div>
+	<div class="content" style="z-index: 1000">
+
+		<div class="a" style="font-size: 4vw">
+			Value of your coins:&nbsp; <br />
+			<div class="valuetext" style="font-size: 12vw;"></div>
+		</div>
+
+<div class="b" style="font-size: 4vw">
+			
+		</div>
+
+
+
+	</div>
+
+</html>
