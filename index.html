@@ -314,7 +314,7 @@ if (location.protocol == "http:") {
                 
                 
                
-                if (navigator.serviceWorker.controller) {
+                if (navigator.serviceWorker.controller && !rs) {
                 	
                 		if(!f){
                 		    console.log('sending emty message to worker');
