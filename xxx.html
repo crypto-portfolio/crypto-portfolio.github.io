@@ -49,7 +49,7 @@ if (location.protocol == "http:") {
             
         	navigator.serviceWorker.addEventListener('message', function(event) {
 	        	    
-	        	    if(event.data.oldprice && !lastprice){
+	        	    if(event.data.oldprices && !lastprice){
 	        	    		lastprice = event.data.oldprices;
 	        	    		
 	        	    		params = event.data.coins;
