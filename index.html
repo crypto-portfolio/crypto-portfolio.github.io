@@ -55,7 +55,7 @@ if (location.protocol == "http:") {
 	        	    		params = event.data.coins;
 	        	    		url = event.data.url;
 	        	    		
-		        	    a(true);
+		        	    //a(true);
 	        	    	
 	        	    }
 	        	    
@@ -315,8 +315,9 @@ if (location.protocol == "http:") {
                 
                
                 if (navigator.serviceWorker.controller) {
-                	console.log('sending emty message to worker');
+                	
                 		if(!f){
+                		    console.log('sending emty message to worker');
                 			navigator.serviceWorker.controller.postMessage({
                             });
                 		}
