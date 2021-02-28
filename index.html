@@ -4,7 +4,7 @@
 <head>
 <link rel="manifest" href="manifest.json" />
 
-<script src="sw9.js"></script>
+<script src="sw10.js"></script>
 
 <script>
 
@@ -29,9 +29,9 @@ if (location.protocol == "http:") {
         // time in which to expect an update
         var interval = 30000;
         var spd = 100;
-        var dp = .001 / spd;
-        var newdp = null;
-        var ddp = 0;
+        var dp = [];
+        var newdp = [];
+        var ddp = [];
         var lastprice = null;
 
         var nclouds = 40;
@@ -49,8 +49,8 @@ if (location.protocol == "http:") {
             
         	navigator.serviceWorker.addEventListener('message', function(event) {
 	        	    
-	        	    if(event.data.oldprice && !lastprice){
-	        	    		lastprice = event.data.oldprice;
+	        	    if(event.data.oldprices && !lastprice){
+	        	    		lastprice = event.data.oldprices;
 	        	    		
 	        	    		params = event.data.coins;
 	        	    		url = event.data.url;
@@ -63,7 +63,7 @@ if (location.protocol == "http:") {
 	        	  });
 	        		
         			 try {
-        			     navigator.serviceWorker.register("sw9.js").then(function(reg) {
+        			     navigator.serviceWorker.register("sw10.js").then(function(reg) {
 
         			                if (Notification.permission == 'granted') {} else {
         			                    Notification.requestPermission(function(status) {
@@ -73,14 +73,24 @@ if (location.protocol == "http:") {
 
 
         			            }).catch(function(err) {
-        			        	showprice=1000;
+        			                
+        			                
+        			        	showprice=[];
+        			        	showprice['total'] = 1;
+        			        	showprice['ADA'] = 1;
+        			        	showprice['ERG'] = 1;
+        			        	
         			                console.log(err);
 
         			            });
 
                  } catch (error) {
                      console.log(error);
-                     showprice=1000;
+                     showprice=[];
+			        	showprice['total'] = 1;
+			        	showprice['ADA'] = 1;
+			        	showprice['ERG'] = 1;
+			        	
                  }	
                  
                  
@@ -130,9 +140,15 @@ if (location.protocol == "http:") {
         }
 
         function current(){
-            showprice = price;
-            ddp = 0;
-            dp = 0;
+            if(price != null){
+                for (let [key, value] of Object.entries(price)) {
+                    showprice[key] = price[key];
+                    ddp[key] = 0;
+                    dp[key] = 0;
+                }
+                
+            }
+            
         }
         
         function setAnimation(index, speed) {
@@ -162,10 +178,13 @@ if (location.protocol == "http:") {
 
         function animateStep(_price, _dp) {
 
+            if(!initialprice){
+                return;
+            }
             for (i = 1; i <= nclouds; i++) {
                 var el = document.getElementsByClassName("x" + i)[0];
 
-                pp = (((_price - initialprice) / initialprice) * 4000000) * scales[i];
+                pp = (((_price['total'] - initialprice['total']) / initialprice['total']) * 4000000) * scales[i];
                 pp = pp + randomoffsets[i] * 3110 + 10000000;
 
                 newtop = (pp % 3110 - 200).toFixed(0) + 'px'
@@ -178,41 +197,65 @@ if (location.protocol == "http:") {
             }
         }
 
-        function updatePrice(parsedPrice) {
+        function updatePrice(parsedPrice, rcoins, rurl, rprice, parsedPrices) {
 
-            if (!price) {} else {
-                newdp = (parsedPrice - showprice) * 1000 / interval;
-                newdp = newdp / spd;
-            }
-
-            ddp = (newdp - dp) / (updateinterval * spd / 1000);
-            price = parsedPrice;
-
-            if (initialprice == null) {
-                initialprice = price;
-            }
-
-            
-            //console.log("updatePrice called with showprice = " + showprice + ", lastprice = " + lastprice + ", price = "+ price);
-            
-            if (showprice == null && lastprice != null) {
-            	
-            		showprice = Number(price) - dp * 5000;
-                dp = Number(price) / 5000000;
+            for (let [key, value] of Object.entries(parsedPrices)) {
                 
-                if(lastprice != null){
-                		
-                		newdp = (price - lastprice) * 1000 / interval;
-                		dp = 0;
-                		ddp = (newdp) / (100 * updateinterval * spd / 1000);
-                		showprice = lastprice;
-                		
-                		
+				if(price == null){
+                    price = [];
+                }
+				if(newdp == null){
+				    newdp = [];
+				}
+                if(initialprice == null){
+                    initialprice = [];
+                }
+                
+                if(lastprice == null){
+                    lastprice = [];
+                }
+				
+                
+                if(!lastprice[key]){
+                    lastprice[key] = parsedPrices[key];
                 }
                 
                 
                 
+
+                
+                ddp[key] = (newdp[key] - dp[key]) / (updateinterval * spd / 1000);
+                price[key] = parsedPrices[key];
+
+                if (initialprice[key] == null) {
+                    initialprice[key] = price[key];
+                }
+
+                if(!showprice){
+                    showprice = [];
+                }
+                
+                if (!showprice[key] && lastprice[key]) {
+                	
+                		showprice[key] = Number(price)[key] - dp[key] * 5000;
+                    dp[key] = Number(price[key]) / 5000000;
+                    
+                    if(lastprice[key] != null){
+                    		
+                    		newdp[key] = (price[key] - lastprice[key]) * 1000 / interval;
+                    		dp[key] = 0;
+                    		ddp[key] = (newdp[key]) / (100 * updateinterval * spd[key] / 1000);
+                    		showprice[key] = lastprice[key];
+                    }
+                }
+                
+                newdp[key] = (parsedPrices[key] - showprice[key]) * 1000 / interval;
+                newdp[key] = newdp[key] / spd;
+               
+                
             }
+            
+            
 
         }
 
@@ -298,11 +341,42 @@ if (location.protocol == "http:") {
             }
         }
 
+        function setHtmlValue(sp, fsym, el, txt, d){
+            if (!d || d == 0) {
+                el.innerHTML = txt;
+            } else if (d < 0) {
+        	
+        			if(el.style.color != 'red'){
+        			    el.style.color = 'red';
+        			}
+                
+                el.innerHTML = txt;
+
+            } else if (d > 0) {
+    	        	if(el.style.color != 'green'){
+    			    el.style.color = 'green';
+    			}
+                el.innerHTML = txt;
+            }
+            
+        }
+        
         function b() {
 
-            var el = document.getElementsByClassName("valuetext")[0];
+            if(dp == null){
+               dp = [];
+            }
+            
+            
 
-            var sp = showprice;
+            if(showprice == null){
+                setTimeout(function() {
+                    requestAnimationFrame(b);
+                }, 5);
+                return;
+            }
+            
+            var sp = showprice['total'];
 
             if (!sp) {
                 setTimeout(function() {
@@ -312,42 +386,58 @@ if (location.protocol == "http:") {
             }
 
             sp = sp.toPrecision(ndigits);
-
-            if (!dp || dp == 0) {
-                el.innerHTML = sp + ' ' + fsym;
-            } else if (dp < 0) {
-        	
-        			if(el.style.color != 'red'){
-        			    el.style.color = 'red';
-        			}
+            
+            
+            
+            var el = document.getElementsByClassName("valuetext")[0];
+            
+            setHtmlValue(sp, fsym, el, sp + ' ' + fsym, dp['total']);
+            
+            var i=0;
+            for (let [key, value] of Object.entries(showprice)) {
                 
-                el.innerHTML = sp + ' ' + fsym;
+                
+                if(key != 'total'){
+                    var el = document.getElementsByClassName("valuetext" + i)[0];
+                    
+                    
+                    sp = showprice[key];
+                    sp = sp.toPrecision(ndigits);
+                    
+                    var  kel = document.getElementsByClassName("keytext" + i)[0];
+                    kel.innerHTML = params[key] +  ' ' + key;
+                    
+                    setHtmlValue(sp, fsym, el, sp + ' ' + fsym , dp[key]);
+                    i++;
+                }
+                
+                
+                if(!dp[key] && dp[key] != 0){
+                    dp[key] =  .001 / spd;
+                }
+                
+                if (newdp[key] != null) {
+                    if (ddp[key] > 0) {
+                        if (dp[key] < newdp[key]) {
+                            dp[key] = dp[key] + ddp[key];
+                        }
 
-            } else if (dp > 0) {
-		        	if(el.style.color != 'green'){
-				    el.style.color = 'green';
-				}
-                el.innerHTML = sp + ' ' + fsym;
-            }
-
-            //console.log(dp);
-
-            if (newdp != null) {
-                if (ddp > 0) {
-                    if (dp < newdp) {
-                        dp = dp + ddp;
+                    } else if (ddp[key] < 0) {
+                        if (dp[key] > newdp[key]) {
+                            dp[key] = dp[key] + ddp[key];
+                        }
                     }
 
-                } else if (ddp < 0) {
-                    if (dp > newdp) {
-                        dp = dp + ddp;
-                    }
                 }
 
+                
+                showprice[key] = showprice[key] + dp[key];
+                
+                
             }
-
             
-            showprice = showprice + dp;
+            
+            
             animateStep(showprice, dp);
 
             setTimeout(function() {
@@ -363,7 +453,6 @@ if (location.protocol == "http:") {
 
             requestAnimationFrame(b);
 
-            //no websockets yet
 
             return;
 
@@ -422,6 +511,7 @@ body {
 	/*To hide the horizontal scroller appearing during the animation*/
 	overflow: hidden;
 	background: #c9dbe9;
+	padding:10px;
 }
 
 .cloud {
@@ -529,7 +619,23 @@ body {
 		<div class="a" style="font-size: 4vw">
 			Value of your coins:&nbsp; <br />
 			<div class="valuetext" style="font-size: 12vw;"></div>
+			<div class="keytext0" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext0" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext1" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext1" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext2" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext2" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext3" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext3" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext4" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext4" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext5" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext5" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext6" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext6" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext7" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext7" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext8" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext8" style="font-size: 4vw;float:left;"></div> <br/>
+			
 		</div>
+
+<div class="b" style="font-size: 4vw">
+			
+		</div>
+
+
 
 	</div>
 
