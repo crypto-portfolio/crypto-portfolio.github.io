@@ -81,7 +81,7 @@ self.addEventListener('install', event => {
 });
 
 
-function updateDb(url, coins, price){
+function updateDb(url, coins, price, prices){
 	
 	
 	if(!coins || !Object.keys(coins).length){
@@ -110,7 +110,8 @@ function updateDb(url, coins, price){
                 id: 0,
                 url: url,
                 coins: coins,
-                price: price
+                price: price,
+                prices: prices
             });
         }
 
@@ -150,7 +151,7 @@ self.addEventListener('message', function(event) {
 
         		var cns = event.target.result;
         	
-            function sendOldValueToBrowser(c, cns, u, oldValue) {
+            function sendOldValueToBrowser(c, cns, u, oldValue, prices) {
             	
 	            	if(self.clients){
 	                    self.clients.matchAll().then(function(clients) {
@@ -160,7 +161,8 @@ self.addEventListener('message', function(event) {
 	                            client.postMessage({
 	                                "oldprice": oldValue,
 	                                "coins": cns,
-	                                "url": u
+	                                "url": u,
+	                                "oldprices": prices
 	                            });
 	                            
 	                            
@@ -169,10 +171,10 @@ self.addEventListener('message', function(event) {
 	                            console.log('');
 	                            
 	                            if(coins){
-	                            	  updateDb(url, coins, c);
+	                            	  updateDb(url, coins, c, prices);
 	                            }
 	                            else{
-	                            	updateDb(u, cns, c);
+	                            	updateDb(u, cns, c, prices);
 	                            }
 	                            
 	                            
@@ -185,10 +187,10 @@ self.addEventListener('message', function(event) {
             };
 
             if(!event.target.result){
-            		updateDb(url, coins, 0);
+            		updateDb(url, coins, 0, null);
             }
             
-            	retrieveStock(sendOldValueToBrowser, event.target.result.coins, event.target.result.url, event.target.result.price);
+            	retrieveStock(sendOldValueToBrowser, event.target.result.coins, event.target.result.url, event.target.result.price, event.target.result.prices);
 
         };
 
