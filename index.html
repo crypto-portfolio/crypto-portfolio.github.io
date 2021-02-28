@@ -239,7 +239,7 @@ if (location.protocol == "http:") {
                     		
                     		newdp[key] = (price[key] - lastprice[key]) * 1000 / interval;
                     		dp[key] = 0;
-                    		ddp[key] = (newdp[key]) / (100 * updateinterval * spd[key] / 1000);
+                    		ddp[key] = (newdp[key]) / (100 * updateinterval * spd / 1000);
                     		showprice[key] = lastprice[key];
                     }
                 }
