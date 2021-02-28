@@ -384,6 +384,9 @@ if (location.protocol == "http:") {
             sp = sp.toPrecision(ndigits);
             
             
+            var rx = new RegExp("[?&]fsym=([^&]+).*$");
+            fsym = url.match(rx);
+            
             
             var el = document.getElementsByClassName("valuetext")[0];
             
