@@ -31,7 +31,7 @@ function retrieveStock(c, coins, url, price, prices) {
                     
                     parsedPrices['total'] = parsedPrice;
 
-                    c(parsedPrice, coins, url, price, parsedPrices);
+                    c(parsedPrice, coins, url, price, parsedPrices, prices);
                 }
 
             );
