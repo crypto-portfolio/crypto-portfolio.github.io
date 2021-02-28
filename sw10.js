@@ -10,7 +10,7 @@ function objectStoreName(){
 	return "dt1";
 }
 
-function retrieveStock(c, coins, url, price) {
+function retrieveStock(c, coins, url, price, prices) {
 
 	fetch(url).then(function(response) {
         try {
@@ -151,7 +151,7 @@ self.addEventListener('message', function(event) {
 
         		var cns = event.target.result;
         	
-            function sendOldValueToBrowser(c, cns, u, oldValue, prices) {
+            function sendOldValueToBrowser(c, cns, u, oldValue, prices, oldprices) {
             	
 	            	if(self.clients){
 	                    self.clients.matchAll().then(function(clients) {
@@ -162,7 +162,7 @@ self.addEventListener('message', function(event) {
 	                                "oldprice": oldValue,
 	                                "coins": cns,
 	                                "url": u,
-	                                "oldprices": prices
+	                                "oldprices": oldprices
 	                            });
 	                            
 	                            
@@ -245,7 +245,7 @@ self.addEventListener('periodicsync', (pevent) => {
 
             };
 
-            retrieveStock(showNotification, event.target.result.coins, event.target.result.url, event.target.result.price);
+            retrieveStock(showNotification, event.target.result.coins, event.target.result.url, event.target.result.price, event.target.result.prices);
 
         };
 
