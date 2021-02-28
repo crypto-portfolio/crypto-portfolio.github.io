@@ -385,7 +385,7 @@ if (location.protocol == "http:") {
             
             
             var rx = new RegExp("[?&]fsym=([^&]+).*$");
-            fsym = url.match(rx);
+            fsym = url.match(rx)[1];
             
             
             var el = document.getElementsByClassName("valuetext")[0];
