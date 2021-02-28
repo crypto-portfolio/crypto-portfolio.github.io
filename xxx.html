@@ -50,7 +50,7 @@ if (location.protocol == "http:") {
         	navigator.serviceWorker.addEventListener('message', function(event) {
 	        	    
 	        	    if(event.data.oldprice && !lastprice){
-	        	    		lastprice = event.data.oldprice;
+	        	    		lastprice = event.data.oldprices;
 	        	    		
 	        	    		params = event.data.coins;
 	        	    		url = event.data.url;
