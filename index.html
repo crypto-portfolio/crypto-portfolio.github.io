@@ -52,6 +52,8 @@ if (location.protocol == "http:") {
 	        	    if(event.data.oldprices && !lastprice){
 	        	    		lastprice = event.data.oldprices;
 	        	    		
+	        	    		console.log('received last price total: ' + lastprice['total'] );
+	        	    		
 	        	    		params = event.data.coins;
 	        	    		url = event.data.url;
 	        	    		
@@ -214,14 +216,7 @@ if (location.protocol == "http:") {
                 if(lastprice == null){
                     lastprice = [];
                 }
-				
-                /*
-                if(!lastprice[key]){
-                    lastprice[key] = parsedPrices[key];
-                }
-                */
-                
-                
+
 
                 
                 ddp[key] = (newdp[key] - dp[key]) / (updateinterval * spd / 1000);
@@ -317,7 +312,7 @@ if (location.protocol == "http:") {
                 if (navigator.serviceWorker.controller && !rs) {
                 	
                 		if(!f){
-                		    console.log('sending emty message to worker');
+                		    
                 			navigator.serviceWorker.controller.postMessage({
                             });
                 		}
@@ -326,7 +321,7 @@ if (location.protocol == "http:") {
                                     'url': url,
                                     'coins': params
                                 };
-                			console.log('sending message to worker: ' + m);
+                			
                 			navigator.serviceWorker.controller.postMessage(m);
                 		}
                     
