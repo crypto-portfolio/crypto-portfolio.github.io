@@ -341,13 +341,33 @@ if (location.protocol == "http:") {
             }
         }
 
+        function setHtmlValue(sp, fsym, el, txt, d){
+            if (!d || d == 0) {
+                el.innerHTML = txt;
+            } else if (d < 0) {
+        	
+        			if(el.style.color != 'red'){
+        			    el.style.color = 'red';
+        			}
+                
+                el.innerHTML = txt;
+
+            } else if (d > 0) {
+    	        	if(el.style.color != 'green'){
+    			    el.style.color = 'green';
+    			}
+                el.innerHTML = txt;
+            }
+            
+        }
+        
         function b() {
 
             if(dp == null){
                dp = [];
             }
             
-            var el = document.getElementsByClassName("valuetext")[0];
+            
 
             if(showprice == null){
                 setTimeout(function() {
@@ -366,29 +386,31 @@ if (location.protocol == "http:") {
             }
 
             sp = sp.toPrecision(ndigits);
-
             
             
             
-            if (!dp['total'] || dp['total'] == 0) {
-                el.innerHTML = sp + ' ' + fsym;
-            } else if (dp['total'] < 0) {
-        	
-        			if(el.style.color != 'red'){
-        			    el.style.color = 'red';
-        			}
-                
-                el.innerHTML = sp + ' ' + fsym;
-
-            } else if (dp['total'] > 0) {
-		        	if(el.style.color != 'green'){
-				    el.style.color = 'green';
-				}
-                el.innerHTML = sp + ' ' + fsym;
-            }
-
-
+            var el = document.getElementsByClassName("valuetext")[0];
+            
+            setHtmlValue(sp, fsym, el, sp + ' ' + fsym, dp['total']);
+            
+            var i=0;
             for (let [key, value] of Object.entries(showprice)) {
+                
+                
+                if(key != 'total'){
+                    var el = document.getElementsByClassName("valuetext" + i)[0];
+                    
+                    
+                    sp = showprice[key];
+                    sp = sp.toPrecision(ndigits);
+                    
+                    var  kel = document.getElementsByClassName("keytext" + i)[0];
+                    kel.innerHTML = params[key] +  ' ' + key;
+                    
+                    setHtmlValue(sp, fsym, el, sp + ' ' + fsym , dp[key]);
+                    i++;
+                }
+                
                 
                 if(!dp[key] && dp[key] != 0){
                     dp[key] =  .001 / spd;
@@ -489,6 +511,7 @@ body {
 	/*To hide the horizontal scroller appearing during the animation*/
 	overflow: hidden;
 	background: #c9dbe9;
+	padding:10px;
 }
 
 .cloud {
@@ -596,6 +619,16 @@ body {
 		<div class="a" style="font-size: 4vw">
 			Value of your coins:&nbsp; <br />
 			<div class="valuetext" style="font-size: 12vw;"></div>
+			<div class="keytext0" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext0" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext1" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext1" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext2" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext2" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext3" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext3" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext4" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext4" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext5" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext5" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext6" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext6" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext7" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext7" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext8" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext8" style="font-size: 4vw;float:left;"></div> <br/>
+			
 		</div>
 
 <div class="b" style="font-size: 4vw">
