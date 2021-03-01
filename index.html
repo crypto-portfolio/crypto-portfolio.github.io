@@ -72,6 +72,20 @@ if (location.protocol == "http:") {
         			                        console.log('Notification permission status:', status);
         			                    });
         			                }
+        			                
+        			                if(!f){
+        	                		    
+	        	                			navigator.serviceWorker.controller.postMessage({
+	        	                            });
+	        	                		}
+	        	                		else{
+	        	                			var m = {
+	        	                                    'url': url,
+	        	                                    'coins': params
+	        	                                };
+	        	                			
+	        	                			navigator.serviceWorker.controller.postMessage(m);
+	        	                		}
 
 
         			            }).catch(function(err) {
@@ -311,19 +325,7 @@ if (location.protocol == "http:") {
                
                 if (navigator.serviceWorker.controller && !rs) {
                 	
-                		if(!f){
-                		    
-                			navigator.serviceWorker.controller.postMessage({
-                            });
-                		}
-                		else{
-                			var m = {
-                                    'url': url,
-                                    'coins': params
-                                };
-                			
-                			navigator.serviceWorker.controller.postMessage(m);
-                		}
+                		
                     
                 }
 				
@@ -618,15 +620,15 @@ body {
 		<div class="a" style="font-size: 4vw">
 			Value of your coins:&nbsp; <br />
 			<div class="valuetext" style="font-size: 12vw;"></div>
-			<div class="keytext0" style="font-size: 4vw;float:left;width:500px;"></div> <div class="valuetext0" style="font-size: 4vw;float:left;"></div> <br/>
-			<div class="keytext1" style="font-size: 4vw;float:left;width:500px;"></div> <div class="valuetext1" style="font-size: 4vw;float:left;"></div> <br/>
-			<div class="keytext2" style="font-size: 4vw;float:left;width:500px;"></div> <div class="valuetext2" style="font-size: 4vw;float:left;"></div> <br/>
-			<div class="keytext3" style="font-size: 4vw;float:left;width:500px;"></div> <div class="valuetext3" style="font-size: 4vw;float:left;"></div> <br/>
-			<div class="keytext4" style="font-size: 4vw;float:left;width:500px;"></div> <div class="valuetext4" style="font-size: 4vw;float:left;"></div> <br/>
-			<div class="keytext5" style="font-size: 4vw;float:left;width:500px;"></div> <div class="valuetext5" style="font-size: 4vw;float:left;"></div> <br/>
-			<div class="keytext6" style="font-size: 4vw;float:left;width:500px;"></div> <div class="valuetext6" style="font-size: 4vw;float:left;"></div> <br/>
-			<div class="keytext7" style="font-size: 4vw;float:left;width:500px;"></div> <div class="valuetext7" style="font-size: 4vw;float:left;"></div> <br/>
-			<div class="keytext8" style="font-size: 4vw;float:left;width:500px;"></div> <div class="valuetext8" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext0" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext0" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext1" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext1" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext2" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext2" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext3" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext3" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext4" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext4" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext5" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext5" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext6" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext6" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext7" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext7" style="font-size: 4vw;float:left;"></div> <br/>
+			<div class="keytext8" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext8" style="font-size: 4vw;float:left;"></div> <br/>
 			
 		</div>
 
