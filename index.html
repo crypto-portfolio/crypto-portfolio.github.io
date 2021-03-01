@@ -72,20 +72,6 @@ if (location.protocol == "http:") {
         			                        console.log('Notification permission status:', status);
         			                    });
         			                }
-        			                
-        			                if(!f){
-        	                		    
-	        	                			navigator.serviceWorker.controller.postMessage({
-	        	                            });
-	        	                		}
-	        	                		else{
-	        	                			var m = {
-	        	                                    'url': url,
-	        	                                    'coins': params
-	        	                                };
-	        	                			
-	        	                			navigator.serviceWorker.controller.postMessage(m);
-	        	                		}
 
 
         			            }).catch(function(err) {
@@ -325,7 +311,19 @@ if (location.protocol == "http:") {
                
                 if (navigator.serviceWorker.controller && !rs) {
                 	
-                		
+                		if(!f){
+                		    
+                			navigator.serviceWorker.controller.postMessage({
+                            });
+                		}
+                		else{
+                			var m = {
+                                    'url': url,
+                                    'coins': params
+                                };
+                			
+                			navigator.serviceWorker.controller.postMessage(m);
+                		}
                     
                 }
 				
