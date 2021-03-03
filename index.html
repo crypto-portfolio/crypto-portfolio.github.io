@@ -327,7 +327,7 @@ if (location.protocol == "http:") {
                     
                 }
 				
-                else{
+                else if(!navigator.serviceWorker.controller){
                 		retrieveStock(updatePrice, params, url);
                 }
 
