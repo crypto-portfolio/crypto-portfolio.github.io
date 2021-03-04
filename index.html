@@ -232,9 +232,10 @@ if (location.protocol == "http:") {
                 
                 if (!showprice[key]) {
                 	
-                		showprice[key] = Number(price)[key] - dp[key] * 5000;
                     dp[key] = Number(price[key]) / 5000000;
                     ddp[key] = 0;
+                		showprice[key] = Number(price[key]) - dp[key] * 5000;
+                    
                     
                     if(lastprice[key] != null){
                     		
