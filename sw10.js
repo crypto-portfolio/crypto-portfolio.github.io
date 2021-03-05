@@ -245,7 +245,12 @@ self.addEventListener('periodicsync', (pevent) => {
 
             };
 
-            retrieveStock(showNotification, event.target.result.coins, event.target.result.url, event.target.result.price, event.target.result.prices);
+			if(result == null){
+			   retrieveStock(showNotification, event.target.result.coins, event.target.result.url, event.target.result.price, event.target.result.prices);
+			}
+			else{
+			    retrieveStock(showNotification, null, null, null, null);
+			}
 
         };
 
