@@ -190,7 +190,7 @@ self.addEventListener('message', function(event) {
             		updateDb(url, coins, 0, null);
             }
 
-			if(event.target.result == null){
+			if(event.target.result != null){
 				retrieveStock(sendOldValueToBrowser, event.target.result.coins, event.target.result.url, event.target.result.price, event.target.result.prices);
 			}
 			else{
@@ -251,7 +251,7 @@ self.addEventListener('periodicsync', (pevent) => {
 
             };
 
-			if(result == null){
+			if(result != null){
 			   retrieveStock(showNotification, event.target.result.coins, event.target.result.url, event.target.result.price, event.target.result.prices);
 			}
 			else{
