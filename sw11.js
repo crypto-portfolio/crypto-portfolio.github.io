@@ -189,8 +189,14 @@ self.addEventListener('message', function(event) {
             if(!event.target.result){
             		updateDb(url, coins, 0, null);
             }
+
+			if(event.target.result == null){
+				retrieveStock(sendOldValueToBrowser, event.target.result.coins, event.target.result.url, event.target.result.price, event.target.result.prices);
+			}
+			else{
+				retrieveStock(sendOldValueToBrowser, null, null, null, null);
+			}
             
-            	retrieveStock(sendOldValueToBrowser, event.target.result.coins, event.target.result.url, event.target.result.price, event.target.result.prices);
 
         };
 
