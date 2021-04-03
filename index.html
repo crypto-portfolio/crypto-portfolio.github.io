@@ -28,6 +28,8 @@
 	var nclouds = 40;
 	var randomoffsets = [];
 	var scales = [];
+	var showtexts = true;
+	var showclouds = true;
 	var sw = null;
 	console.log('Check service worker');
 	if("serviceWorker" in navigator) {
@@ -98,6 +100,8 @@
 	}
 
 	function setAnimation(index, speed) {
+	    
+	    
 		var scale = scales[index];
 		speed = (speed / scale) * 3;
 		var css = '.x' + index + ' {left: ' + (index - 2) * (1600 / nclouds) + 'px;' + '-webkit-transform: scale(' + scale + ');' + '-moz-transform: scale(' + scale + ');' + 'transform: scale(' + scale + ');opacity: ' + scale + ';}',
@@ -113,7 +117,9 @@
 	}
 
 	function animateStep(_price, _dp) {
-		//return;
+	    if(!showclouds){
+	        return;
+	    }
 		if(!initialprice) {
 			return;
 		}
@@ -220,6 +226,11 @@
 	}
 
 	function setHtmlValue(sp, fsym, el, txt, d) {
+	    
+	    if(!showtexts){
+	        return;
+	    }
+	    
 		if(!d || d == 0) {
 			el.innerText = txt;
 		} else if(d < 0) {
@@ -242,6 +253,10 @@
 	}
 
 	function changeInnerText(element, text, direction) {
+	    
+	    if(!showtexts){
+	        return;
+	    }	
 	    
 	    if(text == "."){
 	        element.classList.remove("rotdown");
@@ -314,21 +329,30 @@
 		changeInnerText(element.childNodes[7], ".");
 	}
 	
+	var nframe = 0;
+	
 	function b() {
+	    
+	    nframe++;
+	    
 		if(dp == null) {
 			dp = [];
 		}
+		
+		
 		if(showprice == null) {
 			setTimeout(function() {
 				requestAnimationFrame(b);
-			}, 5);
+			}, 50);
 			return;
 		}
+		
+		
 		var sp = showprice['total'];
 		if(!sp) {
 			setTimeout(function() {
 				requestAnimationFrame(b);
-			}, 5);
+			}, 50);
 			return;
 		}
 		
@@ -356,9 +380,6 @@
 			else{
 			    setElementNumber(x, c, dp['total'] );
 			}
-			
-			
-			
 		}
 		
 		
@@ -374,13 +395,21 @@
 		var i = 0;
 		for(let [key, value] of Object.entries(showprice)) {
 			if(key != 'total') {
+			    
+			    
 				var el = document.getElementsByClassName("valuetext" + i)[0];
 				sp = showprice[key];
 				sp = sp.toPrecision(ndigits);
 				var kel = document.getElementsByClassName("keytext" + i)[0];
-				kel.innerHTML = params[key] + ' ' + key;
+	
+				if(kel.innerText != params[key] + ' ' + key){
+				    kel.innerText = params[key] + ' ' + key; 
+				}
+
 				setHtmlValue(sp, fsym, el, sp + ' ' + fsym, dp[key]);
 				i++;
+				
+				
 			}
 			if(!dp[key] && dp[key] != 0) {
 				dp[key] = .001666666 / spd;
@@ -398,10 +427,14 @@
 			}
 			showprice[key] = showprice[key] + dp[key];
 		}
+		
+		
+		
+		
 		animateStep(showprice, dp);
 		setTimeout(function() {
 			requestAnimationFrame(b);
-		}, 5);
+		}, 50);
 	}
 	window.onload = function() {
 		for(var i = 1; i <= nclouds; i++) {
