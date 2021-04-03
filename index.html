@@ -341,18 +341,14 @@
 		
 		
 		if(showprice == null) {
-			setTimeout(function() {
-				requestAnimationFrame(b);
-			}, 50);
+		    requestAnimationFrame(b);
 			return;
 		}
 		
 		
 		var sp = showprice['total'];
 		if(!sp) {
-			setTimeout(function() {
-				requestAnimationFrame(b);
-			}, 50);
+		    requestAnimationFrame(b);
 			return;
 		}
 		
@@ -432,9 +428,7 @@
 		
 		
 		animateStep(showprice, dp);
-		setTimeout(function() {
-			requestAnimationFrame(b);
-		}, 50);
+		requestAnimationFrame(b);
 	}
 	window.onload = function() {
 		for(var i = 1; i <= nclouds; i++) {
