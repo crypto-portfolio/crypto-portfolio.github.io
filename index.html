@@ -252,7 +252,7 @@
 		}
 	}
 
-	function changeInnerText(element, text, direction) {
+	function changeInnerText(element, text, direction, animate) {
 	    
 	    if(!showtexts){
 	        return;
@@ -277,45 +277,53 @@
 	    }
 	    
 	   
+	   
+	    
 	    
 		if(element.getAttribute('myText') == "" || !(element.getAttribute('myText') == text)) {
 		    
 		    element.setAttribute('myText', text);
 		    element.innerText = text;
 		    
+		    if(animate){
+		        if(element.classList.contains("rotend")){
+				    element.classList.remove("rotend");
+				    return;
+				}
+				
+				element.classList.add("rotend");
+		    }
 		     
-		    if(element.classList.contains("rotend")){
-			    element.classList.remove("rotend");
-			    return;
-			}
-			
-			element.classList.add("rotend");
+		    
 			
 		}
 		else{
-		    if(!element.classList.contains("rotend")){
-		        element.classList.add("rotend");
-			}
+		    if(animate){
+		        if(!element.classList.contains("rotend")){
+			        element.classList.add("rotend");
+				}
+		    }
+		    
 		}
 	}
 
-	function setElementNumber(element, number, direction) {
+	function setElementNumber(element, number, direction, animate) {
 
 	    if(direction >= 0){
 	        var n1 = (Math.round(number) +9) % 10;
 			var n2 = (Math.round(number) ) % 10;
-			changeInnerText(element.childNodes[1], n2, direction);
-			changeInnerText(element.childNodes[3], n1, direction);
-			changeInnerText(element.childNodes[5], n1, direction);
-			changeInnerText(element.childNodes[7], n2, direction);
+			changeInnerText(element.childNodes[1], n2, direction, animate);
+			changeInnerText(element.childNodes[3], n1, direction, animate);
+			changeInnerText(element.childNodes[5], n1, direction, animate);
+			changeInnerText(element.childNodes[7], n2, direction, animate);
 	    }
 	    else{
 	        var n1 = (Math.round(number) ) % 10;
 			var n2 = (Math.round(number) +1) % 10;
-			changeInnerText(element.childNodes[1], n2, direction);
-			changeInnerText(element.childNodes[3], n1, direction);
-			changeInnerText(element.childNodes[5], n1, direction);
-			changeInnerText(element.childNodes[7], n2, direction);
+			changeInnerText(element.childNodes[1], n2, direction, animate);
+			changeInnerText(element.childNodes[3], n1, direction, animate);
+			changeInnerText(element.childNodes[5], n1, direction, animate);
+			changeInnerText(element.childNodes[7], n2, direction, animate);
 	    }
 	    
 		
@@ -355,6 +363,14 @@
 		var n = sp.toPrecision(ndigits) + '000000';
 	    var period = n.indexOf('.'); 
 	    n = n.replaceAll(".", "");
+	    
+	    var n1 = (sp + dp['total']*5).toPrecision(ndigits) + '000000';
+	    var period = n1.indexOf('.'); 
+	    n1 = n1.replaceAll(".", "");
+	    
+	    var n2 = (sp - dp['total']*5).toPrecision(ndigits) + '000000';
+	    var period = n2.indexOf('.'); 
+	    n2 = n2.replaceAll(".", "");
 		
 	    
 		for(var i = 0; i < 7; i++) {
@@ -367,14 +383,20 @@
 			}
 			
 			var c = n.charAt(i-px);
+			var c1 = n1.charAt(i-px);
+			var c2 = n2.charAt(i-px);
 			
 			
+			var animate = true;
+			if(c1 != c && c != c2){
+			    animate = false;
+			}
 			
 			if(i == period){
 			    setElementPeriod(x);
 			}
 			else{
-			    setElementNumber(x, c, dp['total'] );
+			    setElementNumber(x, c, dp['total'], animate);  
 			}
 		}
 		
@@ -396,11 +418,18 @@
 				var el = document.getElementsByClassName("valuetext" + i)[0];
 				sp = showprice[key];
 				sp = sp.toPrecision(ndigits);
+				
+				
 				var kel = document.getElementsByClassName("keytext" + i)[0];
 	
-				if(kel.innerText != params[key] + ' ' + key){
+				if(kel.getAttribute('myText') != params[key] + ' ' + key){
+				    
+				    kel.setAttribute('myText', params[key] + ' ' + key);
 				    kel.innerText = params[key] + ' ' + key; 
 				}
+				
+				
+				
 
 				setHtmlValue(sp, fsym, el, sp + ' ' + fsym, dp[key]);
 				i++;
