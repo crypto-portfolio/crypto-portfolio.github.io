@@ -1,3 +1,4 @@
+
 <html>
 
 <head>
@@ -56,15 +57,11 @@
 				}
 			}).catch(function(err) {
 				showprice = [];
-				showprice['total'] = 1.1;
-				showprice['ADA'] = 1.1;
 				console.log(err);
 			});
 		} catch(error) {
 			console.log(error);
 			showprice = [];
-			showprice['total'] = 1.1;
-			showprice['ADA'] = 1.1;
 		}
 		a(false);
 		setInterval(function() {
@@ -225,7 +222,7 @@
 		}
 	}
 
-	function setHtmlValue(sp, fsym, el, txt, d) {
+	function setHtmlValue(key, cnt, sp, fsym, el, vel,  txt, d) {
 	    
 	    if(!showtexts){
 	        return;
@@ -239,16 +236,30 @@
 			if(el.style.color != 'red') {
 				el.style.color = 'red';
 			}
+			if(vel && vel.style.color != 'red') {
+				vel.style.color = 'red';
+			}
 			
 			el.innerText = txt;
+
+			if(key && vel && cnt){
+				vel.innerText = "(1 " + key + " = " + (sp/cnt).toPrecision(ndigits) + " " + fsym + ")";
+			}
 		} else if(d > 0) {
 		    
 			if(el.style.color != 'green') {
 				el.style.color = 'green';
 			}
+			if(vel && vel.style.color != 'green') {
+				vel.style.color = 'green';
+			}
 		    
 			
 			el.innerText = txt;
+
+			if(key && vel && cnt){
+				vel.innerText = "(1 " + key + " = " + (sp/cnt).toPrecision(ndigits) + " " + fsym + ")";
+			}
 		}
 	}
 
@@ -405,7 +416,8 @@
 		var rx = new RegExp("[?&]fsym=([^&]+).*$");
 		fsym = url.match(rx)[1];
 		var el = document.getElementsByClassName("valuetext")[0];
-		setHtmlValue(sp, fsym, el,  ' ' + fsym, dp['total']);
+
+		setHtmlValue(null, null, sp, fsym, el,  null, ' ' + fsym, dp['total']);
 		
 		
 		
@@ -416,6 +428,8 @@
 			    
 			    
 				var el = document.getElementsByClassName("valuetext" + i)[0];
+				var vel = document.getElementsByClassName("valuetext" + i + "_0")[0];
+
 				sp = showprice[key];
 				sp = sp.toPrecision(ndigits);
 				
@@ -431,7 +445,9 @@
 				
 				
 
-				setHtmlValue(sp, fsym, el, sp + ' ' + fsym, dp[key]);
+				setHtmlValue(key, params[key], sp, fsym, el, vel, sp + ' ' + fsym, dp[key]);
+
+
 				i++;
 				
 				
@@ -845,32 +861,43 @@
 			
 			
 			<div class="keytext keytext0" style="font-size: 4vw; float: left; width: 30%;"></div>
-			<div class="valuetext0" style="font-size: 4vw; float: left;"></div>
+			<div class="valuetext0" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext0_0" style="font-size: 3vw; float: left;"></div>
 			<br />
 			<div class="keytext keytext1" style="font-size: 4vw; float: left; width: 30%;"></div>
-			<div class="valuetext1" style="font-size: 4vw; float: left;"></div>
+			<div class="valuetext1" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext1_0" style="font-size: 3vw; float: left;"></div>
 			<br />
 			<div class="keytext keytext2" style="font-size: 4vw; float: left; width: 30%;"></div>
-			<div class="valuetext2" style="font-size: 4vw; float: left;"></div>
+			<div class="valuetext2" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext2_0" style="font-size: 3vw; float: left;"></div>
 			<br />
 			<div class="keytext keytext3" style="font-size: 4vw; float: left; width: 30%;"></div>
-			<div class="valuetext3" style="font-size: 4vw; float: left;"></div>
+			<div class="valuetext3" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext3_0" style="font-size: 3vw; float: left;"></div>
 			<br />
 			<div class="keytext keytext4" style="font-size: 4vw; float: left; width: 30%;"></div>
-			<div class="valuetext4" style="font-size: 4vw; float: left;"></div>
+			<div class="valuetext4" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext4_0" style="font-size: 3vw; float: left;"></div>
 			<br />
 			<div class="keytext keytext5" style="font-size: 4vw; float: left; width: 30%;"></div>
-			<div class="valuetext5" style="font-size: 4vw; float: left;"></div>
+			<div class="valuetext5" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext5_0" style="font-size: 3vw; float: left;"></div>
 			<br />
 			<div class="keytext keytext6" style="font-size: 4vw; float: left; width: 30%;"></div>
-			<div class="valuetext6" style="font-size: 4vw; float: left;"></div>
+			<div class="valuetext6" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext6_0" style="font-size: 3vw; float: left;"></div>
 			<br />
 			<div class="keytext keytext7" style="font-size: 4vw; float: left; width: 30%;"></div>
-			<div class="valuetext7" style="font-size: 4vw; float: left;"></div>
+			<div class="valuetext7" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext7_0" style="font-size: 3vw; float: left;"></div>
 			<br />
 			<div class="keytext keytext8" style="font-size: 4vw; float: left; width: 30%;"></div>
-			<div class="valuetext8" style="font-size: 4vw; float: left;"></div>
+			<div class="valuetext8" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext8_0" style="font-size: 3vw; float: left;"></div>
 			<br /> </div>
+			
+			
 		<div class="b" style="font-size: 4vw"></div>
 		<br/> </div>
 
