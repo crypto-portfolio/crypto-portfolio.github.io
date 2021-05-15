@@ -228,8 +228,15 @@
 	        return;
 	    }
 	    
+
+		if(key && vel && cnt){
+				vel.innerText = "(1 " + key + " = " + (sp/cnt).toPrecision(ndigits) + " " + fsym + ")";
+			}
 		if(!d || d == 0) {
 			el.innerText = txt;
+
+			
+
 		} else if(d < 0) {
 		    
 		    
@@ -242,9 +249,7 @@
 			
 			el.innerText = txt;
 
-			if(key && vel && cnt){
-				vel.innerText = "(1 " + key + " = " + (sp/cnt).toPrecision(ndigits) + " " + fsym + ")";
-			}
+			
 		} else if(d > 0) {
 		    
 			if(el.style.color != 'green') {
@@ -257,9 +262,7 @@
 			
 			el.innerText = txt;
 
-			if(key && vel && cnt){
-				vel.innerText = "(1 " + key + " = " + (sp/cnt).toPrecision(ndigits) + " " + fsym + ")";
-			}
+			
 		}
 	}
 
