@@ -2,17 +2,17 @@ function dbVersion() {
     return 10;
 }
 
-function dbName(){
-	return "coinsdb1";
+function dbName() {
+    return "coinsdb1";
 }
 
-function objectStoreName(){
-	return "dt1";
+function objectStoreName() {
+    return "dt1";
 }
 
 function retrieveStock(c, coins, url, price, prices) {
 
-	fetch(url).then(function(response) {
+    fetch(url).then(function(response) {
         try {
 
             response.json().then(
@@ -28,7 +28,7 @@ function retrieveStock(c, coins, url, price, prices) {
                         parsedPrices[key] = Number(value) / Number(a[key]);
 
                     }
-                    
+
                     parsedPrices['total'] = parsedPrice;
 
                     c(parsedPrice, coins, url, price, parsedPrices, prices);
@@ -41,14 +41,14 @@ function retrieveStock(c, coins, url, price, prices) {
 
 }
 
-function tryCreateDb(){
-	
-	var d = self.indexedDB.open(dbName(), dbVersion(), function(){
-		event.target.result.createObjectStore(objectStoreName(), {
+function tryCreateDb() {
+
+    var d = self.indexedDB.open(dbName(), dbVersion(), function() {
+        event.target.result.createObjectStore(objectStoreName(), {
             keyPath: 'id'
         });
-		
-	});
+
+    });
 
     d.onupgradeneeded = event => {
 
@@ -61,7 +61,7 @@ function tryCreateDb(){
     d.onerror = function(event) {
         console.log('[onerror]', event);
     };
-	
+
 }
 
 
@@ -69,24 +69,24 @@ tryCreateDb();
 
 self.addEventListener('activate', event => {
 
-	tryCreateDb();
-    
+    tryCreateDb();
+
 
 
 });
 
 self.addEventListener('install', event => {
-	event.waitUntil(self.skipWaiting());
+    event.waitUntil(self.skipWaiting());
 
 });
 
 
-function updateDb(url, coins, price, prices){
-	
-	
-	if(!coins || !Object.keys(coins).length){
-		return;
-	}
+function updateDb(url, coins, price, prices) {
+
+
+    if (!coins || !Object.keys(coins).length) {
+        return;
+    }
 
     var request = self.indexedDB.open(dbName(), dbVersion());
 
@@ -96,16 +96,16 @@ function updateDb(url, coins, price, prices){
         var transaction = db.transaction(objectStoreName(), 'readwrite');
 
         transaction.onsuccess = function(event) {
-            
+
         };
 
         var store = transaction.objectStore(objectStoreName());
 
         if (url) {
-        		console.log('storing coins with price: ' + price);
-        		console.log(coins);
-        		console.log('');
-        	
+            console.log('storing coins with price: ' + price);
+            console.log(coins);
+            console.log('');
+
             var db_op_req = store.put({
                 id: 0,
                 url: url,
@@ -121,98 +121,92 @@ function updateDb(url, coins, price, prices){
 
 self.addEventListener('message', function(event) {
 
-	
-	var request = self.indexedDB.open(dbName(), dbVersion());
-	var url = event.data.url;
-	var coins =  event.data.coins;
 
-	request.onerror = function(evt){
-		console.log(evt);
-	}
-	
+    var request = self.indexedDB.open(dbName(), dbVersion());
+    var url = event.data.url;
+    var coins = event.data.coins;
+
+    request.onerror = function(evt) {
+        console.log(evt);
+    }
+
     request.onsuccess = function(evt) {
 
         var db = evt.target.result;
         var transaction = null;
-        
-        
+
+
         try {
 
-        		transaction = db.transaction(objectStoreName(), 'readwrite');
+            transaction = db.transaction(objectStoreName(), 'readwrite');
 
         } catch (err) {
-        		tryCreateDb();
-        		return;
+            tryCreateDb();
+            return;
         }
-        
+
 
         var store = transaction.objectStore(objectStoreName());
         store.get(0).onsuccess = function(event) {
 
-        		var cns = event.target.result;
-        	
+            var cns = event.target.result;
+
             function sendOldValueToBrowser(c, cns, u, oldValue, prices, oldprices) {
-            	
-	            	if(self.clients){
-	                    self.clients.matchAll().then(function(clients) {
-	                        clients.forEach(function(client) {
-	                        	
-	                        	
-	                            client.postMessage({
-	                                "oldprice": oldValue,
-	                                "coins": cns,
-	                                "url": u,
-	                                "oldprices": oldprices
-	                            });
-	                            
-	                            
-	                            console.log('send old value (' +  oldValue + ')  to browser: ');
-	                            console.log(cns);
-	                            console.log('');
-	                            
-	                            if(coins){
-	                            	  updateDb(url, coins, c, prices);
-	                            }
-	                            else{
-	                            	updateDb(u, cns, c, prices);
-	                            }
-	                            
-	                            
-	                            
-	                            
-	                        })
-	                    });
-	            	}
+
+                if (self.clients) {
+                    self.clients.matchAll().then(function(clients) {
+                        clients.forEach(function(client) {
+
+
+                            client.postMessage({
+                                "oldprice": oldValue,
+                                "coins": cns,
+                                "url": u,
+                                "oldprices": oldprices
+                            });
+
+
+                            console.log('send old value (' + oldValue + ')  to browser: ');
+                            console.log(cns);
+                            console.log('');
+
+                            if (coins) {
+                                updateDb(url, coins, c, prices);
+                            } else {
+                                updateDb(u, cns, c, prices);
+                            }
+
+
+
+
+                        })
+                    });
+                }
 
             };
 
-            if(!event.target.result){
-            		updateDb(url, coins, 0, null);
+            if (!event.target.result) {
+                updateDb(url, coins, 0, null);
             }
 
-			if(event.target.result != null){
-				retrieveStock(sendOldValueToBrowser, event.target.result.coins, event.target.result.url, event.target.result.price, event.target.result.prices);
-			}
-			else{
-				retrieveStock(sendOldValueToBrowser, coins, url, null, null);
-			}
-            
+            if (event.target.result != null) {
+                retrieveStock(sendOldValueToBrowser, event.target.result.coins, event.target.result.url, event.target.result.price, event.target.result.prices);
+            } else {
+                retrieveStock(sendOldValueToBrowser, coins, url, null, null);
+            }
+
 
         };
 
     };
-	
-	
-	
-	
-	
-	
-	
+
+
+
 
 });
 
 self.addEventListener("fetch", function(event) {
-    
+
 });
 
 self.addEventListener('periodicsync', (pevent) => {
@@ -229,9 +223,9 @@ self.addEventListener('periodicsync', (pevent) => {
         store.get(0).onsuccess = function(event) {
 
             function showNotification(c) {
-                
+
                 c = c.toPrecision(6);
-                
+
                 var options = {
                     body: 'Latest value of portfolio is ' + c,
                     icon: 'images/og-img.png',
@@ -251,12 +245,11 @@ self.addEventListener('periodicsync', (pevent) => {
 
             };
 
-			if(result != null){
-			   retrieveStock(showNotification, event.target.result.coins, event.target.result.url, event.target.result.price, event.target.result.prices);
-			}
-			else{
-			    retrieveStock(showNotification, null, null, null, null);
-			}
+            if (event.target.result != null) {
+                retrieveStock(showNotification, event.target.result.coins, event.target.result.url, event.target.result.price, event.target.result.prices);
+            } else {
+                retrieveStock(showNotification, null, null, null, null);
+            }
 
         };
 
