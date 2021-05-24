@@ -439,10 +439,10 @@
 				
 				var kel = document.getElementsByClassName("keytext" + i)[0];
 	
-				if(kel.getAttribute('myText') != params[key] + ' ' + key){
+				if(kel.getAttribute('myText') != Number(params[key]).toPrecision(ndigits) + ' ' + key){
 				    
-				    kel.setAttribute('myText', params[key] + ' ' + key);
-				    kel.innerText = params[key] + ' ' + key; 
+				    kel.setAttribute('myText', Number(params[key]).toPrecision(ndigits) + ' ' + key);
+				    kel.innerText = Number(params[key]).toPrecision(ndigits)  + ' ' + key; 
 				}
 				
 				
