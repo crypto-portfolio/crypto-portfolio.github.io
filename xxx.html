@@ -204,6 +204,10 @@
 			if(params.fsym) {
 				delete params.fsym;
 			}
+
+			if(params.portfolio) {
+				delete params.portfolio;
+			}
 			if(navigator.serviceWorker.controller && !rs) {
 				if(!f) {
 					navigator.serviceWorker.controller.postMessage(
