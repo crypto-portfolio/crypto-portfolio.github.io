@@ -2,573 +2,806 @@
 <html>
 
 <head>
-<link rel="manifest" href="manifest.json" />
-
-<script src="sw10.js"></script>
-
-<script>
-
-if (location.protocol == "http:") {
-  location.protocol = "https:";
-}
-
-
-		console.log('Initializing parameters');
-        var price = null;
-        var showprice = null;
-        var updateinterval = 10000;
-        var initialprice = null;
-        var fsym = "";
-        var tsyms = null;
-        var coinsowned = [];
-        var ndigits = 6;
-
-        var params = [];
-        var url = null;
-
-        // time in which to expect an update
-        var interval = 30000;
-        var spd = 100;
-        var dp = [];
-        var newdp = [];
-        var ddp = [];
-        var lastprice = null;
-
-        var nclouds = 40;
-        var randomoffsets = [];
-        var scales = [];
-
-        var sw = null;
-
-        console.log('Check service worker');
-        
-        if ("serviceWorker" in navigator) {
-	    
-            
-            console.log('Service worker seems to be present');
-            
-        	navigator.serviceWorker.addEventListener('message', function(event) {
-	        	    
-	        	    if(event.data.oldprices && !lastprice){
-	        	    		lastprice = event.data.oldprices;
-	        	    		
-	        	    		params = event.data.coins;
-	        	    		url = event.data.url;
-	        	    		
-		        	    a(true);
-	        	    	
-	        	    }
-	        	    
-	        	    
-	        	  });
-	        		
-        			 try {
-        			     navigator.serviceWorker.register("sw10.js").then(function(reg) {
-
-        			                if (Notification.permission == 'granted') {} else {
-        			                    Notification.requestPermission(function(status) {
-        			                        console.log('Notification permission status:', status);
-        			                    });
-        			                }
-
-
-        			            }).catch(function(err) {
-        			                
-        			                
-        			        	showprice=[];
-        			        	showprice['total'] = 1;
-        			        	showprice['ADA'] = 1;
-        			        	showprice['ERG'] = 1;
-        			        	
-        			                console.log(err);
-
-        			            });
-
-                 } catch (error) {
-                     console.log(error);
-                     showprice=[];
-			        	showprice['total'] = 1;
-			        	showprice['ADA'] = 1;
-			        	showprice['ERG'] = 1;
-			        	
-                 }	
-                 
-                 
-            
-            a(false);
-
-            setInterval(function() {
-                a(true);
-            }, updateinterval);
-
-            
-            
-            
-            
-        }
-
-        
-        
-        const registration = navigator.serviceWorker.ready;
-        
-        
-        registration.then(function(reg)
-     	{
-        		if ('periodicSync' in reg) {
-                try {
-                    reg.periodicSync.register('content-sync', {
-                        
-                        minInterval: 1,
-                        minPeriod: 1
-                    });
-                } catch (error) {
-                    console.log(error);
-                }
-            }
-     	
-     	});
-        
-        		
-        		
-       
-        
-        
-        
-        for (i = 0; i < nclouds; i++) {
-            randomoffsets.push(Math.random());
-            scales.push(Math.random() * 1.9 + 0.2);
-        }
-
-        function current(){
-            if(price != null){
-                for (let [key, value] of Object.entries(price)) {
-                    showprice[key] = price[key];
-                    ddp[key] = 0;
-                    dp[key] = 0;
-                }
-                
-            }
-            
-        }
-        
-        function setAnimation(index, speed) {
-
-            var scale = scales[index];
-
-            speed = (speed / scale) * 3;
-
-            var css = '.x' + index + ' {left: ' + (index - 2) * (1600 / nclouds) + 'px;' +
-                '-webkit-transform: scale(' + scale + ');' +
-                '-moz-transform: scale(' + scale + ');' +
-                'transform: scale(' + scale + ');opacity: ' + scale + ';}',
-
-                head = document.head || document.getElementsByTagName('head')[0],
-                style = document.createElement('style');
-
-            style.type = 'text/css';
-            if (style.styleSheet) {
-                style.styleSheet.cssText = css;
-            } else {
-                style.appendChild(document.createTextNode(css));
-            }
-
-            head.appendChild(style);
-
-        }
-
-        function animateStep(_price, _dp) {
-
-            if(!initialprice){
-                return;
-            }
-            for (i = 1; i <= nclouds; i++) {
-                var el = document.getElementsByClassName("x" + i)[0];
-
-                pp = (((_price['total'] - initialprice['total']) / initialprice['total']) * 4000000) * scales[i];
-                pp = pp + randomoffsets[i] * 3110 + 10000000;
-
-                newtop = (pp % 3110 - 200).toFixed(0) + 'px'
-
-                if (!(newtop === el.style.top)) {
-                    el.style.top = (pp % 3110 - 200).toFixed(0) + 'px';
-
-                }
-
-            }
-        }
-
-        function updatePrice(parsedPrice, rcoins, rurl, rprice, parsedPrices) {
-
-            for (let [key, value] of Object.entries(parsedPrices)) {
-                
-				if(price == null){
-                    price = [];
-                }
-				if(newdp == null){
-				    newdp = [];
+	<link rel="manifest" href="manifest.json" />
+	<script src="sw12.js"></script>
+	<script>
+	if(location.protocol == "http:") {
+		location.protocol = "https:";
+	}
+	console.log('Initializing parameters');
+	var price = null;
+	var showprice = null;
+	var updateinterval = 10000;
+	var initialprice = null;
+	var fsym = "";
+	var tsyms = null;
+	var coinsowned = [];
+	var ndigits = 6;
+	var params = [];
+	var url = null;
+	// time in which to expect an update
+	var interval = 30000;
+	var spd = 100;
+	var dp = [];
+	var newdp = [];
+	var ddp = [];
+	var lastprice = null;
+	var nclouds = 40;
+	var randomoffsets = [];
+	var scales = [];
+	var showtexts = true;
+	var showclouds = true;
+	var sw = null;
+	console.log('Check service worker');
+	if("serviceWorker" in navigator) {
+		console.log('Service worker seems to be present');
+		navigator.serviceWorker.addEventListener('message', function(event) {
+			if(event.data.oldprices && !lastprice) {
+				lastprice = event.data.oldprices;
+				console.log('received last price total: ' + lastprice['total']);
+				params = event.data.coins;
+				url = event.data.url;
+				a(true);
+			} else {
+				params = event.data.coins;
+				url = event.data.url;
+				a(true);
+			}
+		});
+		try {
+			navigator.serviceWorker.register("sw12.js").then(function(reg) {
+				if(Notification.permission == 'granted') {} else {
+					Notification.requestPermission(function(status) {
+						console.log('Notification permission status:', status);
+					});
 				}
-                if(initialprice == null){
-                    initialprice = [];
-                }
-                
-                if(lastprice == null){
-                    lastprice = [];
-                }
+			}).catch(function(err) {
+				showprice = [];
+				console.log(err);
+			});
+		} catch(error) {
+			console.log(error);
+			showprice = [];
+		}
+		a(false);
+		setInterval(function() {
+			a(true);
+		}, updateinterval);
+	}
+	const registration = navigator.serviceWorker.ready;
+	registration.then(function(reg) {
+		if('periodicSync' in reg) {
+			try {
+				reg.periodicSync.register('content-sync', {
+					minInterval: 1,
+					minPeriod: 1
+				});
+			} catch(error) {
+				console.log(error);
+			}
+		}
+	});
+	for(i = 0; i < nclouds; i++) {
+		randomoffsets.push(Math.random());
+		scales.push(Math.random() * 1.9 + 0.2);
+	}
+
+	function current() {
+		if(price != null) {
+			for(let [key, value] of Object.entries(price)) {
+				showprice[key] = price[key];
+				ddp[key] = 0;
+				dp[key] = 0;
+			}
+		}
+	}
+
+	function setAnimation(index, speed) {
+	    
+	    
+		var scale = scales[index];
+		speed = (speed / scale) * 3;
+		var css = '.x' + index + ' {left: ' + (index - 2) * (1600 / nclouds) + 'px;' + '-webkit-transform: scale(' + scale + ');' + '-moz-transform: scale(' + scale + ');' + 'transform: scale(' + scale + ');opacity: ' + scale + ';}',
+			head = document.head || document.getElementsByTagName('head')[0],
+			style = document.createElement('style');
+		style.type = 'text/css';
+		if(style.styleSheet) {
+			style.styleSheet.cssText = css;
+		} else {
+			style.appendChild(document.createTextNode(css));
+		}
+		head.appendChild(style);
+	}
+
+	function animateStep(_price, _dp) {
+	    if(!showclouds){
+	        return;
+	    }
+		if(!initialprice) {
+			return;
+		}
+		for(i = 1; i <= nclouds; i++) {
+			var el = document.getElementsByClassName("x" + i)[0];
+			pp = (((_price['total'] - initialprice['total']) / initialprice['total']) * 4000000) * scales[i];
+			pp = pp + randomoffsets[i] * 3110 + 10000000;
+			newtop = (pp % 3110 - 200).toFixed(0) + 'px'
+			if(!(newtop === el.style.top)) {
+				el.style.top = (pp % 3110 - 200).toFixed(0) + 'px';
+			}
+		}
+	}
+
+	function updatePrice(parsedPrice, rcoins, rurl, rprice, parsedPrices) {
+		for(let [key, value] of Object.entries(parsedPrices)) {
+			if(price == null) {
+				price = [];
+			}
+			if(newdp == null) {
+				newdp = [];
+			}
+			if(initialprice == null) {
+				initialprice = [];
+			}
+			if(lastprice == null) {
+				lastprice = [];
+			}
+			ddp[key] = (newdp[key] - dp[key]) / (updateinterval * spd / 1000);
+			price[key] = parsedPrices[key];
+			if(initialprice[key] == null) {
+				initialprice[key] = price[key];
+			}
+			if(!showprice) {
+				showprice = [];
+			}
+			if(!showprice[key]) {
+				dp[key] = Number(price[key]) / 5000000;
+				ddp[key] = 0;
+				showprice[key] = Number(price[key]) - dp[key] * 5000;
+				if(lastprice[key] != null) {
+					newdp[key] = (price[key] - lastprice[key]) * 1000 / interval;
+					dp[key] = 0;
+					ddp[key] = (newdp[key]) / (100 * updateinterval * spd / 1000);
+					showprice[key] = lastprice[key];
+				}
+			}
+			newdp[key] = (parsedPrices[key] - showprice[key]) * 1000 / interval;
+			newdp[key] = newdp[key] / spd;
+		}
+	}
+
+	function a(rs) {
+		try {
+			var f = false;
+			var myurl = null;
+			var ltsyms = "";
+			var lparams = [];
+			var regex = /[?&]([^=#]+)=([^&#]*)/g,
+				myurl = window.location.href,
+				match;
+			while(match = regex.exec(myurl)) {
+				lparams[match[1]] = match[2];
+				if(match[1] != 'fsym' && match[1] != 'portfolio') {
+					coinsowned.push(match[1]);
+					ltsyms = ltsyms + match[1] + ",";
+				}
+				f = true;
+			}
+			if(!f) {
+				/*
+                             fsym = 'EUR';
+                             params['ETH'] = 0.137;
+                             params['ADA'] = 135.86300000;
+                             tsyms = 'ETH,ADA'
+                             coinsowned[0] = 'ETH';
+                             coinsowned[1] = 'ADA';
+                             */
+			} else {
+				tsyms = ltsyms;
+				params = lparams;
+				fsym = params["fsym"];
+				url = "https://min-api.cryptocompare.com/data/price?fsym=" + fsym + "&tsyms=" + tsyms;
+			}
+			if(params.fsym) {
+				delete params.fsym;
+			}
+			if(navigator.serviceWorker.controller && !rs) {
+				if(!f) {
+					navigator.serviceWorker.controller.postMessage(
+						{
+							'portfolio' : params.portfolio
+						}
+						);
+				} else {
+					var m = {
+						'url': url,
+						'coins': params,
+						'portfolio' : params.portfolio
+					};
+					navigator.serviceWorker.controller.postMessage(m);
+				}
+			} else {
+				retrieveStock(updatePrice, params, url);
+			}
+		} catch(err) {
+			console.log(err);
+		}
+	}
+
+	function setHtmlValue(key, cnt, sp, fsym, el, vel,  txt, d) {
+	    
+	    if(!showtexts){
+	        return;
+	    }
+	    
+
+		if(key && vel && cnt){
+				vel.innerText = "(1 " + key + " = " + (sp/cnt).toPrecision(ndigits) + " " + fsym + ")";
+			}
+		if(!d || d == 0) {
+			el.innerText = txt;
+
+			
+
+		} else if(d < 0) {
+		    
+		    
+			if(el.style.color != 'red') {
+				el.style.color = 'red';
+			}
+			if(vel && vel.style.color != 'red') {
+				vel.style.color = 'red';
+			}
+			
+			el.innerText = txt;
+
+			
+		} else if(d > 0) {
+		    
+			if(el.style.color != 'green') {
+				el.style.color = 'green';
+			}
+			if(vel && vel.style.color != 'green') {
+				vel.style.color = 'green';
+			}
+		    
+			
+			el.innerText = txt;
+
+			
+		}
+	}
+
+	function changeInnerText(element, text, direction, animate) {
+	    
+	    if(!showtexts){
+	        return;
+	    }	
+	    
+	    if(text == "."){
+	        element.classList.remove("rotdown");
+	        
+	        element.classList.remove("rotup");
+	    }
+	    else if(direction >= 0){
+	        if(!element.classList.contains("rotup")){
+			    element.classList.add("rotup");
+			    element.classList.remove("rotdown");
+			}
+	    }
+	    else{
+	        if(!element.classList.contains("rotdown")){
+			    element.classList.add("rotdown");
+			    element.classList.remove("rotup");
+			} 
+	    }
+	    
+	   
+	   
+	    
+	    
+		if(element.getAttribute('myText') == "" || !(element.getAttribute('myText') == text)) {
+		    
+		    element.setAttribute('myText', text);
+		    element.innerText = text;
+		    
+		    if(animate){
+		        if(element.classList.contains("rotend")){
+				    element.classList.remove("rotend");
+				    return;
+				}
 				
-                
-                if(!lastprice[key]){
-                    lastprice[key] = parsedPrices[key];
-                }
-                
-                
-                
+				element.classList.add("rotend");
+		    }
+		     
+		    
+			
+		}
+		else{
+		    if(animate){
+		        if(!element.classList.contains("rotend")){
+			        element.classList.add("rotend");
+				}
+		    }
+		    
+		}
+	}
 
-                
-                ddp[key] = (newdp[key] - dp[key]) / (updateinterval * spd / 1000);
-                price[key] = parsedPrices[key];
+	function setElementNumber(element, number, direction, animate) {
 
-                if (initialprice[key] == null) {
-                    initialprice[key] = price[key];
-                }
-
-                if(!showprice){
-                    showprice = [];
-                }
-                
-                if (!showprice[key] && lastprice[key]) {
-                	
-                		showprice[key] = Number(price)[key] - dp[key] * 5000;
-                    dp[key] = Number(price[key]) / 5000000;
-                    
-                    if(lastprice[key] != null){
-                    		
-                    		newdp[key] = (price[key] - lastprice[key]) * 1000 / interval;
-                    		dp[key] = 0;
-                    		ddp[key] = (newdp[key]) / (100 * updateinterval * spd[key] / 1000);
-                    		showprice[key] = lastprice[key];
-                    }
-                }
-                
-                newdp[key] = (parsedPrices[key] - showprice[key]) * 1000 / interval;
-                newdp[key] = newdp[key] / spd;
-               
-                
-            }
-            
-            
-
-        }
-
-        function a(rs) {
-
-            try {
-            	
-            		var f = false;
-            		var myurl = null;
-
-                
-                 var ltsyms = "";
-                 var lparams = [];
-                 
-                 var regex = /[?&]([^=#]+)=([^&#]*)/g,
-                     myurl = window.location.href,
-                     match;
-
-                 
-
-                 while (match = regex.exec(myurl)) {
-                     lparams[match[1]] = match[2];
-
-                     if (match[1] != 'fsym') {
-                         coinsowned.push(match[1]);
-                         ltsyms = ltsyms + match[1] + ",";
-                     }
-
-                     f = true;
-                 }
-
-                 if (!f) {
-                 	 
-                 	/*
-                     fsym = 'EUR';
-                     params['ETH'] = 0.137;
-                     params['ADA'] = 135.86300000;
-                     tsyms = 'ETH,ADA'
-                     coinsowned[0] = 'ETH';
-                     coinsowned[1] = 'ADA';
-                     */
-
-                 } else {
-                	 	tsyms = ltsyms;
-                	 	params = lparams;
-                 	  fsym = params["fsym"];
-                 	   url = "https://min-api.cryptocompare.com/data/price?fsym=" + fsym + "&tsyms=" + tsyms;
-                     
-                 }
-
-             
-                
-                if(params.fsym){
-                		delete params.fsym;
-                }
-                
-                
-               
-                if (navigator.serviceWorker.controller) {
-                	console.log('sending emty message to worker');
-                		if(!f){
-                			navigator.serviceWorker.controller.postMessage({
-                            });
-                		}
-                		else{
-                			var m = {
-                                    'url': url,
-                                    'coins': params
-                                };
-                			console.log('sending message to worker: ' + m);
-                			navigator.serviceWorker.controller.postMessage(m);
-                		}
-                    
-                }
-				
-                if(rs){
-                		retrieveStock(updatePrice, params, url);
-                }
-
-
-            } catch (err) {
-                console.log(err);
-            }
-        }
-
-        function setHtmlValue(sp, fsym, el, txt, d){
-            if (!d || d == 0) {
-                el.innerHTML = txt;
-            } else if (d < 0) {
-        	
-        			if(el.style.color != 'red'){
-        			    el.style.color = 'red';
-        			}
-                
-                el.innerHTML = txt;
-
-            } else if (d > 0) {
-    	        	if(el.style.color != 'green'){
-    			    el.style.color = 'green';
-    			}
-                el.innerHTML = txt;
-            }
-            
-        }
-        
-        function b() {
-
-            if(dp == null){
-               dp = [];
-            }
-            
-            
-
-            if(showprice == null){
-                setTimeout(function() {
-                    requestAnimationFrame(b);
-                }, 5);
-                return;
-            }
-            
-            var sp = showprice['total'];
-
-            if (!sp) {
-                setTimeout(function() {
-                    requestAnimationFrame(b);
-                }, 5);
-                return;
-            }
-
-            sp = sp.toPrecision(ndigits);
-            
-            
-            
-            var el = document.getElementsByClassName("valuetext")[0];
-            
-            setHtmlValue(sp, fsym, el, sp + ' ' + fsym, dp['total']);
-            
-            var i=0;
-            for (let [key, value] of Object.entries(showprice)) {
-                
-                
-                if(key != 'total'){
-                    var el = document.getElementsByClassName("valuetext" + i)[0];
-                    
-                    
-                    sp = showprice[key];
-                    sp = sp.toPrecision(ndigits);
-                    
-                    var  kel = document.getElementsByClassName("keytext" + i)[0];
-                    kel.innerHTML = params[key] +  ' ' + key;
-                    
-                    setHtmlValue(sp, fsym, el, sp + ' ' + fsym , dp[key]);
-                    i++;
-                }
-                
-                
-                if(!dp[key] && dp[key] != 0){
-                    dp[key] =  .001 / spd;
-                }
-                
-                if (newdp[key] != null) {
-                    if (ddp[key] > 0) {
-                        if (dp[key] < newdp[key]) {
-                            dp[key] = dp[key] + ddp[key];
-                        }
-
-                    } else if (ddp[key] < 0) {
-                        if (dp[key] > newdp[key]) {
-                            dp[key] = dp[key] + ddp[key];
-                        }
-                    }
-
-                }
-
-                
-                showprice[key] = showprice[key] + dp[key];
-                
-                
-            }
-            
-            
-            
-            animateStep(showprice, dp);
-
-            setTimeout(function() {
-                requestAnimationFrame(b);
-            }, 5);
-
-        }
-
-        window.onload = function() {
-            for (var i = 1; i <= nclouds; i++) {
-                setAnimation(i, 10);
-            }
-
-            requestAnimationFrame(b);
-
-
-            return;
-
-            if ("WebSocket" in window) {
-
-                // Let us open a web socket
-                var ws = new WebSocket("wss://streamer.cryptocompare.com/socket.io/?EIO=3&transport=websocket");
-
-                ws.onopen = function() {
- 
-                    this.send(t);
-
-                    console.log("Message is sent...");
-                };
-
-                ws.onmessage = function(evt) {
-                    var received_msg = evt.data;
-                    console.log("Message is received... + " + evt.data);
-                };
-
-                ws.onclose = function() {
-                    // websocket is closed.
-                    console.log("Connection is closed...");
-                };
-
-                window.onbeforeunload = function(event) {
-                    socket.close();
-                };
-            } else {
-                // The browser doesn't support WebSocket
-                console.log("WebSocket NOT supported by your Browser!");
-            }
-
-
-        }
-        
-        document.addEventListener('touchstart', function (e) {
+	    if(direction >= 0){
+	        var n1 = (Math.round(number) +9) % 10;
+			var n2 = (Math.round(number) ) % 10;
+			changeInnerText(element.childNodes[1], n2, direction, animate);
+			changeInnerText(element.childNodes[3], n1, direction, animate);
+			changeInnerText(element.childNodes[5], n1, direction, animate);
+			changeInnerText(element.childNodes[7], n2, direction, animate);
+	    }
+	    else{
+	        var n1 = (Math.round(number) ) % 10;
+			var n2 = (Math.round(number) +1) % 10;
+			changeInnerText(element.childNodes[1], n2, direction, animate);
+			changeInnerText(element.childNodes[3], n1, direction, animate);
+			changeInnerText(element.childNodes[5], n1, direction, animate);
+			changeInnerText(element.childNodes[7], n2, direction, animate);
+	    }
+	    
 		
+	}
+
+	function setElementPeriod(element) {
+
+		changeInnerText(element.childNodes[1], ".");
+		changeInnerText(element.childNodes[3], ".");
+		changeInnerText(element.childNodes[5], ".");
+		changeInnerText(element.childNodes[7], ".");
+	}
+	
+	var nframe = 0;
+	
+	function b() {
+	    
+	    nframe++;
+	    
+		if(dp == null) {
+			dp = [];
+		}
+		
+		
+		if(showprice == null) {
+		    requestAnimationFrame(b);
+			return;
+		}
+		
+		
+		var sp = showprice['total'];
+		if(!sp) {
+		    requestAnimationFrame(b);
+			return;
+		}
+		
+		var n = sp.toPrecision(ndigits) + '000000';
+	    var period = n.indexOf('.'); 
+	    n = n.replaceAll(".", "");
+	    
+	    var n1 = (sp + dp['total']*5).toPrecision(ndigits) + '000000';
+	    var period = n1.indexOf('.'); 
+	    n1 = n1.replaceAll(".", "");
+	    
+	    var n2 = (sp - dp['total']*5).toPrecision(ndigits) + '000000';
+	    var period = n2.indexOf('.'); 
+	    n2 = n2.replaceAll(".", "");
+		
+	    
+		for(var i = 0; i < 7; i++) {
+		    
+			var x = document.getElementsByClassName("fn" + i)[0];
+			
+			var px = 0;
+			if(i > period){
+			  px = 1;  
+			}
+			
+			var c = n.charAt(i-px);
+			var c1 = n1.charAt(i-px);
+			var c2 = n2.charAt(i-px);
+			
+			
+			var animate = true;
+			if(c1 != c && c != c2){
+			    animate = false;
+			}
+			
+			if(i == period){
+			    setElementPeriod(x);
+			}
+			else{
+			    setElementNumber(x, c, dp['total'], animate);  
+			}
+		}
+		
+		
+		sp = sp.toPrecision(ndigits);
+		var rx = new RegExp("[?&]fsym=([^&]+).*$");
+		fsym = url.match(rx)[1];
+		var el = document.getElementsByClassName("valuetext")[0];
+
+		setHtmlValue(null, null, sp, fsym, el,  null, ' ' + fsym, dp['total']);
+		
+		
+		
+		
+		var i = 0;
+		for(let [key, value] of Object.entries(showprice)) {
+			if(key != 'total') {
+			    
+			    
+				var el = document.getElementsByClassName("valuetext" + i)[0];
+				var vel = document.getElementsByClassName("valuetext" + i + "_0")[0];
+
+				sp = showprice[key];
+				sp = sp.toPrecision(ndigits);
+				
+				
+				var kel = document.getElementsByClassName("keytext" + i)[0];
+	
+				if(kel.getAttribute('myText') != Number(params[key]).toPrecision(ndigits) + ' ' + key){
+				    
+				    kel.setAttribute('myText', Number(params[key]).toPrecision(ndigits) + ' ' + key);
+				    kel.innerText = Number(params[key]).toPrecision(ndigits)  + ' ' + key; 
+				}
+				
+				
+				
+
+				setHtmlValue(key, params[key], sp, fsym, el, vel, sp + ' ' + fsym, dp[key]);
+
+
+				i++;
+				
+				
+			}
+			if(!dp[key] && dp[key] != 0) {
+				dp[key] = .001666666 / spd;
+			}
+			if(newdp[key] != null) {
+				if(ddp[key] > 0) {
+					if(dp[key] < newdp[key]) {
+						dp[key] = dp[key] + ddp[key];
+					}
+				} else if(ddp[key] < 0) {
+					if(dp[key] > newdp[key]) {
+						dp[key] = dp[key] + ddp[key];
+					}
+				}
+			}
+			showprice[key] = showprice[key] + dp[key];
+		}
+		
+		
+		
+		
+		animateStep(showprice, dp);
+		requestAnimationFrame(b);
+	}
+	window.onload = function() {
+		for(var i = 1; i <= nclouds; i++) {
+			setAnimation(i, 10);
+		}
+		requestAnimationFrame(b);
+		return;
+		if("WebSocket" in window) {
+			// Let us open a web socket
+			var ws = new WebSocket("wss://streamer.cryptocompare.com/socket.io/?EIO=3&transport=websocket");
+			ws.onopen = function() {
+				this.send(t);
+				console.log("Message is sent...");
+			};
+			ws.onmessage = function(evt) {
+				var received_msg = evt.data;
+				console.log("Message is received... + " + evt.data);
+			};
+			ws.onclose = function() {
+				// websocket is closed.
+				console.log("Connection is closed...");
+			};
+			window.onbeforeunload = function(event) {
+				socket.close();
+			};
+		} else {
+			// The browser doesn't support WebSocket
+			console.log("WebSocket NOT supported by your Browser!");
+		}
+	}
+	document.addEventListener('touchstart', function(e) {
 		current();
+	}, false);
+	</script>
+	<style>
+	* {
+		margin: 0;
+		padding: 0;
+	}
+	
+	body {
+		overflow: hidden;
+		background: #c9dbe9;
+		padding: 10px;
+	}
+	
+	#mainc {
+    padding-left: 2vw;
+    float: left; 
+    
+}
+	
+	.cloud {
+		width: 200px;
+		height: 60px;
+		background: #fff;
+		border-radius: 200px;
+		-moz-border-radius: 200px;
+		-webkit-border-radius: 200px;
+		z-index: -1000;
+		position: absolute;
+	}
+	
+	.cloud:before,
+	.cloud:after {
+		content: '';
+		position: absolute;
+		background: #fff;
+		width: 100px;
+		height: 80px;
+		position: absolute;
+		top: -15px;
+		left: 10px;
+		z-index: -1000;
+		border-radius: 100px;
+		-moz-border-radius: 100px;
+		-webkit-border-radius: 100px;
+	}
+	/*
+         .cloud{
+         animation: move 3s infinite;
+         }
+         @keyframes move {
+         100% {
+         transform: translate(-200px, 1000px);
+         }
+         */
+	
+	.cloud,
+	.cloud:before,
+	.cloud:after {
+		//
+		box-shadow: 0 0 3px 3px #ffffff;
+	}
+	
+	.cloud:before {
+		transform: rotate(70deg);
+	}
+	
+	.cloud:after {
+		width: 120px;
+		height: 120px;
+		top: -55px;
+		left: auto;
+		right: 15px;
+		transform: rotate(33deg);
+	}
+	
+	@import url(https://fonts.googleapis.com/css?family=Oswald);
+	.count.up .bottom.front .count.down.changing .bottom.back {
+		box-shadow: 0 37px 2px -10px rgba(0, 0, 0, 0.3);
+	}
+	
+	.keytext {
+		clear: left;
+	}
+	
+	
+	.count {
+		height: 10vw;
+		perspective: 20vw;
+		width: 7vw;
+		font-size: 8.5vw;
+	}
+	
+	.count span {
+		transform-origin: 0 5vw 0;
+	}
+	
+	.count span:before {
+		border-bottom: .1vw solid #000;
+	}
+	
+	.count span:before {
+		content: "";
+		left: 0;
+		position: absolute;
+		width: 100%;
+	}
+	
+	.count span {
+		background: #202020;
+		color: #f8f8f8;
+		display: block;
+		left: 0;
+		position: absolute;
+		top: 0;
+		text-shadow: 0 1px 0 #282828, 0 2px 0 #1e1e1e, 0 3px 0 #141414, 0 4px 0 #0a0a0a, 0 5px 0 #000, 0 0 10px rgba(0, 0, 0, 0.8);
+		width: 100%;
+	}
+	
+	.count span:after {
+		box-shadow: inset 0 0 10vh rgba(0, 0, 0, 0.35);
+		content: "";
+		height: 100%;
+		left: 0;
+		position: absolute;
+		top: 0;
+		width: 100%;
+	}
+	
+	.count {
+		box-shadow: 0 10px 5px -5px rgba(0, 0, 0, 0.2);
+		text-align: center;
+		transform: translateZ(0);
+		margin: 10px;
+	}
+	
+	.count .top {
+		border-top-left-radius: 10px;
+		border-top-right-radius: 10px;
+		box-shadow: inset 0 2px rgba(0, 0, 0, 0.9), inset 0 3px 0 rgba(255, 255, 255, 0.4);
+		height: 50%;
+		overflow: hidden;
+	}
+	
+	.count .top:before {
+		bottom: 0;
+	}
+	
+	.count .top:after {
+		background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
+		border-top-left-radius: 10px;
+		border-top-right-radius: 10px;
+	}
+	
+	.count .bottom {
+		border-radius: 10px;
+		height: 100%;
+	}
+	
+	.count .bottom:before {
+		top: 50%;
+	}
+	
+	.count .bottom:after {
+		border-radius: 10px;
+		background: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0));
+	}
+	
+	.count.down .top {
+		border-top-left-radius: 10px;
+		border-top-right-radius: 10px;
+		height: 50%;
+	}
+	
+	.count.down .top.front {
+		transform-style: flat;
+		z-index: 3;
+	}
+	
+	.count.down .top.back {
+		transform: rotate3d(1, 0, 0, -45deg);
+		z-index: 4;
+	}
+	
+	.count.down .bottom {
+		border-radius: 10px;
+	}
+	
+	.count.down .bottom.back {
+		z-index: 2;
+	}
+	
+	.count.down .bottom.front {
+		z-index: 1;
+	}
+	
+	.count.down.changing .bottom.back {
+		transform: rotate3d(1, 0, 0, 45deg);
+	}
+	
+	.count.down.changing .top.back,
+	.count.down.changed .top.back {
+		transition: transform 0.35s ease-out 0.35s;
+		transform: none;
+	}
+	
+	.count.up .top {
+		height: 50%;
+	}
+	
+	.count.up .top.front {
+		z-index: 4;
+	}
+	
+	.count.up .top.back {
+		z-index: 3;
+	}
+	
+	.count.up .bottom.back {
+		z-index: 1;
+	}
+	
+	.count.up .bottom.front {
+		z-index: 2;
+	}
+	
+	.front.bottom {}
+	
+	.top.front.rotup.rotend {
+		transform: rotate3d(1, 0, 0, -90deg);
+		transition: transform 0.2444s ease-in, box-shadow 0.2444s ease-in;
+	}
+	
+	.top.front.rotup {
+		transform: rotate3d(1, 0, 0, 0deg);
+	}
+	
+	.bottom.front.rotup.rotend {
+		transform: rotate3d(1, 0, 0, 0deg);
+		transition: transform 0.2444s ease-in, box-shadow 0.2444s ease-in;
+		transition-delay: 0.2444s;
+	}
+	
+	.bottom.front.rotup {
+		transform: rotate3d(1, 0, 0, 90deg);
+	}
+	.rotup{
+
+	}
+	.rotdown{
+
+	}
+	
+	
+	
+	.top.front.rotdown.rotend {
+		transform: rotate3d(1, 0, 0, 0deg);
+		transition: transform 0.2444s ease-in, box-shadow 0.2444s ease-in;
+		transition-delay: 0.2444s;
+	}
+	
+	.top.front.rotdown {
+		transform: rotate3d(1, 0, 0, -90deg);
+	}
+	
+	.bottom.front.rotdown.rotend {
+		transform: rotate3d(1, 0, 0, 90deg);
+		transition: transform 0.2444s ease-in, box-shadow 0.2444s ease-in;
 		
-		
-		
-		  }, false);
-        
-        
-     
-    </script>
-
-<style>
-* {
-	margin: 0;
-	padding: 0;
-}
-
-body {
-	/*To hide the horizontal scroller appearing during the animation*/
-	overflow: hidden;
-	background: #c9dbe9;
-	padding:10px;
-}
-
-.cloud {
-	width: 200px;
-	height: 60px;
-	background: #fff;
-	border-radius: 200px;
-	-moz-border-radius: 200px;
-	-webkit-border-radius: 200px;
-	z-index: -1000;
-	position: absolute;
-}
-
-.cloud:before, .cloud:after {
-	content: '';
-	position: absolute;
-	background: #fff;
-	width: 100px;
-	height: 80px;
-	position: absolute;
-	top: -15px;
-	left: 10px;
-	z-index: -1000;
-	border-radius: 100px;
-	-moz-border-radius: 100px;
-	-webkit-border-radius: 100px;
-}
-/*
-.cloud{
-	animation: move 3s infinite;
-}
-@keyframes move {
-  100% {
-     transform: translate(-200px, 1000px);
-  }
-*/
-.cloud, .cloud:before, .cloud:after { //
-	box-shadow: 0 0 3px 3px #ffffff;
-}
-
-.cloud:before {
-	-webkit-transform: rotate(70deg);
-	transform: rotate(70deg);
-	-moz-transform: rotate(70deg);
-}
-
-.cloud:after {
-	width: 120px;
-	height: 120px;
-	top: -55px;
-	left: auto;
-	right: 15px;
-	-webkit-transform: rotate(33deg);
-	transform: rotate(33deg);
-	-moz-transform: rotate(33deg);
-}
-</style>
+	}
+	
+	.bottom.front.rotdown {
+		transform: rotate3d(1, 0, 0, 0deg);
+	}
+	
+	
+	
+	.count.up.changing .bottom.front,
+	.count.up.changed .bottom.front {
+		box-shadow: 0 0 0 0 transparent;
+		transform: rotate3d(1, 0, 0, .3);
+	}
+	
+	.count.changed .top.front,
+	.count.changed .bottom.back {
+		display: none;
+	}
+	</style>
 </head>
 
 <body onkeydown="current()">
@@ -616,27 +849,64 @@ body {
 	</div>
 	<div class="content" style="z-index: 1000">
 
-		<div class="a" style="font-size: 4vw">
-			Value of your coins:&nbsp; <br />
-			<div class="valuetext" style="font-size: 12vw;"></div>
-			<div class="keytext0" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext0" style="font-size: 4vw;float:left;"></div> <br/>
-			<div class="keytext1" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext1" style="font-size: 4vw;float:left;"></div> <br/>
-			<div class="keytext2" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext2" style="font-size: 4vw;float:left;"></div> <br/>
-			<div class="keytext3" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext3" style="font-size: 4vw;float:left;"></div> <br/>
-			<div class="keytext4" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext4" style="font-size: 4vw;float:left;"></div> <br/>
-			<div class="keytext5" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext5" style="font-size: 4vw;float:left;"></div> <br/>
-			<div class="keytext6" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext6" style="font-size: 4vw;float:left;"></div> <br/>
-			<div class="keytext7" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext7" style="font-size: 4vw;float:left;"></div> <br/>
-			<div class="keytext8" style="font-size: 4vw;float:left;width:300px;"></div> <div class="valuetext8" style="font-size: 4vw;float:left;"></div> <br/>
-			
+		<div class="a" style="font-size: 4vw"> Value of your coins:&nbsp;
+			<br />
+					<div id="numbertemplate">
+			<div class="count up changing fn0" style="float:left"> <span class="back top"></span> <span class="front top"></span> <span class="back bottom"></span> <span class="front bottom"></span> </div>
+			<div class="count up changing fn1" style="float:left"> <span class="back top"></span> <span class="front top"></span> <span class="back bottom"></span> <span class="front bottom"></span> </div>
+			<div class="count up changing fn2" style="float:left"> <span class="back top"></span> <span class="front top"></span> <span class="back bottom"></span> <span class="front bottom"></span> </div>
+			<div class="count up changing fn3" style="float:left"> <span class="back top"></span> <span class="front top"></span> <span class="back bottom"></span> <span class="front bottom"></span> </div>
+			<div class="count up changing fn4" style="float:left"> <span class="back top"></span> <span class="front top"></span> <span class="back bottom"></span> <span class="front bottom"></span> </div>
+			<div class="count up changing fn5" style="float:left"> <span class="back top"></span> <span class="front top"></span> <span class="back bottom"></span> <span class="front bottom"></span> </div>
+		<div class="count up changing fn6" style="float:left"> <span class="back top"></span> <span class="front top"></span> <span class="back bottom"></span> <span class="front bottom"></span> </div>
+		
+		
 		</div>
-
-<div class="b" style="font-size: 4vw">
 			
-		</div>
-
-
-
-	</div>
+			
+			
+			<div id="mainc" class="valuetext" style="font-size: 12vw;"></div>
+			
+			
+			<div class="keytext keytext0" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext0" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext0_0" style="font-size: 3vw; float: left;"></div>
+			<br />
+			<div class="keytext keytext1" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext1" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext1_0" style="font-size: 3vw; float: left;"></div>
+			<br />
+			<div class="keytext keytext2" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext2" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext2_0" style="font-size: 3vw; float: left;"></div>
+			<br />
+			<div class="keytext keytext3" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext3" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext3_0" style="font-size: 3vw; float: left;"></div>
+			<br />
+			<div class="keytext keytext4" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext4" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext4_0" style="font-size: 3vw; float: left;"></div>
+			<br />
+			<div class="keytext keytext5" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext5" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext5_0" style="font-size: 3vw; float: left;"></div>
+			<br />
+			<div class="keytext keytext6" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext6" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext6_0" style="font-size: 3vw; float: left;"></div>
+			<br />
+			<div class="keytext keytext7" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext7" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext7_0" style="font-size: 3vw; float: left;"></div>
+			<br />
+			<div class="keytext keytext8" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext8" style="font-size: 4vw; float: left; width: 30%;"></div>
+			<div class="valuetext8_0" style="font-size: 3vw; float: left;"></div>
+			<br /> </div>
+			
+			
+		<div class="b" style="font-size: 4vw"></div>
+		<br/> </div>
 
 </html>
