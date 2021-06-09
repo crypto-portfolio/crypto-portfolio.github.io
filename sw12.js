@@ -123,8 +123,8 @@ function updateDb(portfolio, url, coins, price, prices) {
 
 }
 
-self.addEventListener('message', function(event) {
 
+function fetchAndSend(event){
 
     var request = self.indexedDB.open(dbName(), dbVersion());
     var url = event.data.url;
@@ -207,6 +207,22 @@ self.addEventListener('message', function(event) {
         };
 
     };
+}
+
+function patchDb(cbk){
+
+    cbk();
+}
+
+self.addEventListener('message', function(event) {
+
+
+    var fetch = function() {
+        fetchAndSend(event);
+    }
+        
+    
+    patchDb(fetch);
 
 
 
