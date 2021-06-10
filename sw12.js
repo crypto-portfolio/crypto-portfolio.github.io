@@ -83,7 +83,7 @@ self.addEventListener('install', event => {
 
 function updateDb(portfolio, url, coins, price, prices, id) {
 
-    if(!id){
+    if(!id && id != 0){
 
         id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
     }
