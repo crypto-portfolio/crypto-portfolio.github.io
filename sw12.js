@@ -140,6 +140,7 @@ self.addEventListener('message', function(event) {
 
         var db = evt.target.result;
         var transaction = null;
+        var portfolio = portfolio;
 
 
         try {
