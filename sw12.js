@@ -177,9 +177,10 @@ self.addEventListener('message', function(event) {
                         for(var i=0; i<event.target.result.length; i++){
                             if(event.target.result[i].portfolio == portfolio){
                                 cns = event.target.result[i];
+                                break;
                             }
                             
-                            break;
+                            
                         }
                     }
                     else{
