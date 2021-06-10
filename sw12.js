@@ -161,23 +161,24 @@ self.addEventListener('message', function(event) {
 
             var cns = null;
 
-            
 
-            if(event.target.result && event.target.result[0]){
+            function setCns(){
+                if(event.target.result && event.target.result[0]){
 
-                if(portfolio){
-                    for(var i=0; i<event.target.result.length; i++){
-                        event.target.result[i].portfolio == portfolio;
-                        cns = event.target.result[i];
-                        break;
+                    if(portfolio){
+                        for(var i=0; i<event.target.result.length; i++){
+                            event.target.result[i].portfolio == portfolio;
+                            cns = event.target.result[i];
+                            break;
+                        }
+                    }
+                    else{
+                        cns = event.target.result[0];
                     }
                 }
-                else{
-                    cns = event.target.result[0];
-                }
-
-                
             }
+
+            setCns();
 
             function sendOldValueToBrowser(c, cns, u, oldValue, prices, oldprices, id) {
 
