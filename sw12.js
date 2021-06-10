@@ -203,21 +203,15 @@ self.addEventListener('message', function(event) {
                             });
 
 
-                            console.log('send old value (' + oldValue + ')  to browser: ');
-                            console.log(cns);
-                            console.log('');
-
-                            if (coins) {
-                                updateDb(portfolio, url, coins, c, prices, id);
-                            } else {
-                                updateDb(portfolio, u, cns, c, prices, id);
-                            }
-
-
-
 
                         })
                     });
+                }
+
+                if (coins) {
+                    updateDb(portfolio, url, coins, c, prices, id);
+                } else {
+                    updateDb(portfolio, u, cns, c, prices, id);
                 }
 
             };
