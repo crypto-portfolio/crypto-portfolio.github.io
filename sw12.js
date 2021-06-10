@@ -10,7 +10,7 @@ function objectStoreName() {
     return "dt1";
 }
 
-function retrieveStock(c, coins, url, price, prices) {
+function retrieveStock(c, coins, url, price, prices, id) {
 
     fetch(url).then(function(response) {
         try {
@@ -31,7 +31,7 @@ function retrieveStock(c, coins, url, price, prices) {
 
                     parsedPrices['total'] = parsedPrice;
 
-                    c(parsedPrice, coins, url, price, parsedPrices, prices);
+                    c(parsedPrice, coins, url, price, parsedPrices, prices, id);
                 }
 
             );
