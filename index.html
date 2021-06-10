@@ -3,7 +3,7 @@
 
 <head>
 	<link rel="manifest" href="manifest.json" />
-	<script src="sw11.js"></script>
+	<script src="sw12.js"></script>
 	<script>
 	if(location.protocol == "http:") {
 		location.protocol = "https:";
@@ -49,7 +49,7 @@
 			}
 		});
 		try {
-			navigator.serviceWorker.register("sw11.js").then(function(reg) {
+			navigator.serviceWorker.register("sw12.js").then(function(reg) {
 				if(Notification.permission == 'granted') {} else {
 					Notification.requestPermission(function(status) {
 						console.log('Notification permission status:', status);
@@ -180,7 +180,7 @@
 				match;
 			while(match = regex.exec(myurl)) {
 				lparams[match[1]] = match[2];
-				if(match[1] != 'fsym') {
+				if(match[1] != 'fsym' && match[1] != 'portfolio') {
 					coinsowned.push(match[1]);
 					ltsyms = ltsyms + match[1] + ",";
 				}
@@ -204,13 +204,26 @@
 			if(params.fsym) {
 				delete params.fsym;
 			}
+
+			var portfolio = params.portfolio;
+			if(params.portfolio) {
+				delete params.portfolio;
+			}
 			if(navigator.serviceWorker.controller && !rs) {
 				if(!f) {
-					navigator.serviceWorker.controller.postMessage({});
+					navigator.serviceWorker.controller.postMessage(
+						{
+							'portfolio' : portfolio,
+							'eventType' : 'crypto'
+
+						}
+						);
 				} else {
 					var m = {
 						'url': url,
-						'coins': params
+						'coins': params,
+						'portfolio' : portfolio,
+						'eventType' : 'crypto'
 					};
 					navigator.serviceWorker.controller.postMessage(m);
 				}
