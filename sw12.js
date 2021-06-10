@@ -130,7 +130,7 @@ self.addEventListener('message', function(event) {
     var request = self.indexedDB.open(dbName(), dbVersion());
     var url = event.data.url;
     var coins = event.data.coins;
-    var portfolio = event.data.portfolio;
+    var port = event.data.portfolio;
 
     request.onerror = function(evt) {
         console.log(evt);
@@ -140,7 +140,7 @@ self.addEventListener('message', function(event) {
 
         var db = evt.target.result;
         var transaction = null;
-        var portfolio = portfolio;
+        var portfolio = port;
 
 
         try {
