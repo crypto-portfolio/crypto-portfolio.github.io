@@ -81,11 +81,11 @@ self.addEventListener('install', event => {
 });
 
 
-function updateDb(portfolio, url, coins, price, prices) {
+function updateDb(portfolio, url, coins, price, prices, id) {
 
 
     if(!portfolio){
-        portfolio = 'main';
+        portfolio = '';
     }
 
     if (!coins || !Object.keys(coins).length) {
@@ -111,7 +111,7 @@ function updateDb(portfolio, url, coins, price, prices) {
             console.log('');
 
             var db_op_req = store.put({
-                id: portfolio,
+                id: id,
                 url: url,
                 coins: coins,
                 price: price,
@@ -123,18 +123,13 @@ function updateDb(portfolio, url, coins, price, prices) {
 
 }
 
+self.addEventListener('message', function(event) {
 
-function fetchAndSend(event){
-
-    
 
     var request = self.indexedDB.open(dbName(), dbVersion());
     var url = event.data.url;
     var coins = event.data.coins;
     var portfolio = event.data.portfolio;
-    if(!portfolio){
-        portfolio = 'main';
-    }
 
     request.onerror = function(evt) {
         console.log(evt);
@@ -155,13 +150,20 @@ function fetchAndSend(event){
             return;
         }
 
-
         var store = transaction.objectStore(objectStoreName());
-        store.get(portfolio).onsuccess = function(event) {
+
+
+
+
+        store.getAll().onsuccess = function(event) {
 
             var cns = event.target.result;
 
-            function sendOldValueToBrowser(c, cns, u, oldValue, prices, oldprices) {
+            if(cns && cns[0]){
+                cns = cns[0];
+            }
+
+            function sendOldValueToBrowser(c, cns, u, oldValue, prices, oldprices, id) {
 
                 if (self.clients) {
                     self.clients.matchAll().then(function(clients) {
@@ -181,9 +183,9 @@ function fetchAndSend(event){
                             console.log('');
 
                             if (coins) {
-                                updateDb(portfolio, url, coins, c, prices);
+                                updateDb(portfolio, url, coins, c, prices, id);
                             } else {
-                                updateDb(null, u, cns, c, prices);
+                                updateDb(null, u, cns, c, prices, id);
                             }
 
 
@@ -196,39 +198,19 @@ function fetchAndSend(event){
             };
 
             if (!event.target.result) {
-                updateDb(portfolio, url, coins, 0, null);
+                updateDb(portfolio, url, coins, 0, null, null);
             }
 
             if (event.target.result != null) {
-                retrieveStock(sendOldValueToBrowser, event.target.result.coins, event.target.result.url, event.target.result.price, event.target.result.prices);
+                retrieveStock(sendOldValueToBrowser, event.target.result.coins, event.target.result.url, event.target.result.price, event.target.result.prices, event.target.result.id);
             } else {
-                retrieveStock(sendOldValueToBrowser, coins, url, null, null);
+                retrieveStock(sendOldValueToBrowser, coins, url, null, null, null);
             }
 
 
         };
 
     };
-}
-
-function patchDb(cbk){
-
-    cbk();
-}
-
-self.addEventListener('message', function(event) {
-
-
-    if(!event.data || !event.data.portfolio){
-        return;
-    }
-
-    var fetch = function() {
-        fetchAndSend(event);
-    }
-        
-    
-    patchDb(fetch);
 
 
 
