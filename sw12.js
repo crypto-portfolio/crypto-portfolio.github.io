@@ -115,7 +115,8 @@ function updateDb(portfolio, url, coins, price, prices, id) {
                 url: url,
                 coins: coins,
                 price: price,
-                prices: prices
+                prices: prices,
+                portfolio: portfolio
             });
         }
 
@@ -159,8 +160,22 @@ self.addEventListener('message', function(event) {
 
             var cns = null;
 
+            
+
             if(event.target.result && event.target.result[0]){
-                cns = event.target.result[0];
+
+                if(portfolio){
+                    for(var i=0; i<cns.length; i++){
+                        event.target.result[i].portfolio == portfolio;
+                        cns = event.target.result[i];
+                        break;
+                    }
+                }
+                else{
+                    cns = event.target.result[0];
+                }
+
+                
             }
 
             function sendOldValueToBrowser(c, cns, u, oldValue, prices, oldprices, id) {
@@ -185,7 +200,7 @@ self.addEventListener('message', function(event) {
                             if (coins) {
                                 updateDb(portfolio, url, coins, c, prices, id);
                             } else {
-                                updateDb(null, u, cns, c, prices, id);
+                                updateDb(portfolio, u, cns, c, prices, id);
                             }
 
 
