@@ -213,14 +213,17 @@
 				if(!f) {
 					navigator.serviceWorker.controller.postMessage(
 						{
-							'portfolio' : portfolio
+							'portfolio' : portfolio,
+							'eventType' : 'crypto'
+
 						}
 						);
 				} else {
 					var m = {
 						'url': url,
 						'coins': params,
-						'portfolio' : portfolio
+						'portfolio' : portfolio,
+						'eventType' : 'crypto'
 					};
 					navigator.serviceWorker.controller.postMessage(m);
 				}
