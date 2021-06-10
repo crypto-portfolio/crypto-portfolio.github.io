@@ -157,10 +157,10 @@ self.addEventListener('message', function(event) {
 
         store.getAll().onsuccess = function(event) {
 
-            var cns = event.target.result;
+            var cns = null;
 
-            if(cns && cns[0]){
-                cns = cns[0];
+            if(event.target.result && event.target.result[0]){
+                cns = event.target.result[0];
             }
 
             function sendOldValueToBrowser(c, cns, u, oldValue, prices, oldprices, id) {
@@ -201,8 +201,8 @@ self.addEventListener('message', function(event) {
                 updateDb(portfolio, url, coins, 0, null, null);
             }
 
-            if (event.target.result != null) {
-                retrieveStock(sendOldValueToBrowser, event.target.result.coins, event.target.result.url, event.target.result.price, event.target.result.prices, event.target.result.id);
+            if (cns!= null) {
+                retrieveStock(sendOldValueToBrowser, cns.coins, cns.url, cns.price, cns.prices, cns.id);
             } else {
                 retrieveStock(sendOldValueToBrowser, coins, url, null, null, null);
             }
