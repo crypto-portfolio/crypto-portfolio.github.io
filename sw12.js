@@ -127,6 +127,10 @@ function updateDb(portfolio, url, coins, price, prices, id) {
 self.addEventListener('message', function(event) {
 
 
+    if(event.data.eventType != 'crypto'){
+        return;
+    }
+
     var request = self.indexedDB.open(dbName(), dbVersion());
     var url = event.data.url;
     var coins = event.data.coins;
