@@ -169,6 +169,7 @@ self.addEventListener('message', function(event) {
 
             var cns = null;
             var portfolios = [];
+            var portfolio = portfolio;
 
             function setCns(){
 
