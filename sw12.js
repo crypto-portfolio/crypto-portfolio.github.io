@@ -189,7 +189,6 @@ self.addEventListener('message', function(event) {
                     else{
                         cns = event.target.result[0];
                         portfolio = event.target.result[0].portfolio;
-                        break;
                     }
                 }
             }
