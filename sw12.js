@@ -10,7 +10,7 @@ function objectStoreName() {
     return "dt1";
 }
 
-function retrieveStock(c, coins, url, price, prices, id) {
+function retrieveStock(c, coins, url, price, prices, id, portfolios) {
 
     fetch(url).then(function(response) {
         try {
@@ -31,7 +31,7 @@ function retrieveStock(c, coins, url, price, prices, id) {
 
                     parsedPrices['total'] = parsedPrice;
 
-                    c(parsedPrice, coins, url, price, parsedPrices, prices, id);
+                    c(parsedPrice, coins, url, price, parsedPrices, prices, id, portfolios);
                 }
 
             );
@@ -168,9 +168,14 @@ self.addEventListener('message', function(event) {
         store.getAll().onsuccess = function(event) {
 
             var cns = null;
-
+            var portfolios = [];
 
             function setCns(){
+
+                for(var i=0; i<event.target.result.length; i++){
+                    portfolios.push(event.target.result[i].portfolio);
+                }
+
                 if(event.target.result && event.target.result[0]){
 
                     if(portfolio){
@@ -179,8 +184,6 @@ self.addEventListener('message', function(event) {
                                 cns = event.target.result[i];
                                 break;
                             }
-                            
-                            
                         }
                     }
                     else{
@@ -191,7 +194,7 @@ self.addEventListener('message', function(event) {
 
             setCns();
 
-            function sendOldValueToBrowser(c, cns, u, oldValue, prices, oldprices, id) {
+            function sendOldValueToBrowser(c, cns, u, oldValue, prices, oldprices, id, portfolios) {
 
                 if (self.clients) {
                     self.clients.matchAll().then(function(clients) {
@@ -202,7 +205,8 @@ self.addEventListener('message', function(event) {
                                 "oldprice": oldValue,
                                 "coins": cns,
                                 "url": u,
-                                "oldprices": oldprices
+                                "oldprices": oldprices,
+                                portfolios: portfolios
                             });
 
 
@@ -224,9 +228,9 @@ self.addEventListener('message', function(event) {
             }
 
             if (cns!= null) {
-                retrieveStock(sendOldValueToBrowser, cns.coins, cns.url, cns.price, cns.prices, cns.id);
+                retrieveStock(sendOldValueToBrowser, cns.coins, cns.url, cns.price, cns.prices, cns.id, portfolios);
             } else {
-                retrieveStock(sendOldValueToBrowser, coins, url, null, null, null);
+                retrieveStock(sendOldValueToBrowser, coins, url, null, null, null, portfolios);
             }
 
 
