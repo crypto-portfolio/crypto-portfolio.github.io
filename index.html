@@ -184,7 +184,11 @@
 					coinsowned.push(match[1]);
 					ltsyms = ltsyms + match[1] + ",";
 				}
-				f = true;
+
+				if(match[1] != 'portfolio'){
+					f = true;
+				}
+				
 			}
 			if(!f) {
 				/*
