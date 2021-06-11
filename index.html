@@ -79,9 +79,23 @@
 				distX = touchobj.pageX - startX // get horizontal dist traveled by finger while in contact with surface
 				distY = touchobj.pageY - startY // get vertical dist traveled by finger while in contact with surface
 				
+				if(Math.abs(distX) > 20 || Math.abs(distY) > 20){
+
+					if(Math.abs(distX) > Math.abs(distY)){
+						touchsurface.style.left = contentLeft + distX;
+						touchsurface.style.top = contentTop;
+
+					}
+					else{
+						touchsurface.style.top = contentTop + distY;
+						touchsurface.style.left = contentLeft;
+					}
+
+				}
+
+
 				
-				touchsurface.style.left = contentLeft + distX;
-				touchsurface.style.top = contentTop + distY;
+				
 
 
 				e.preventDefault() // prevent scrolling when inside DIV
@@ -92,15 +106,22 @@
 				distX = touchobj.pageX - startX // get horizontal dist traveled by finger while in contact with surface
 				distY = touchobj.pageY - startY // get vertical dist traveled by finger while in contact with surface
 				elapsedTime = new Date().getTime() - startTime // get time elapsed
-				if (elapsedTime <= allowedTime) { // first condition for awipe met
-					if (Math.abs(distX) >= threshold && Math.abs(distY) <= restraint) { // 2nd condition for horizontal swipe met
+				if (Math.abs(distX) >= threshold && Math.abs(distY) <= restraint) { // 2nd condition for horizontal swipe met
 						swipedir = (distX < 0) ? 'left' : 'right' // if dist traveled is negative, it indicates left swipe
 					}
 					else if (Math.abs(distY) >= threshold && Math.abs(distX) <= restraint) { // 2nd condition for vertical swipe met
 						swipedir = (distY < 0) ? 'up' : 'down' // if dist traveled is negative, it indicates up swipe
 					}
-				}
 				
+
+				if(swipedir == 'left'){
+
+				}
+				else if(swipedir == 'right'){
+
+				}
+
+
 				touchsurface.style.position = 'inherit';
 				touchsurface.style.left = 'inherit';
 				touchsurface.style.top = 'inherit';
