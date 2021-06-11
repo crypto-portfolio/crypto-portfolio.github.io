@@ -2,6 +2,8 @@
 
 <head>
 	<link rel="manifest" href="manifest.json" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 	<script src="sw12.js"></script>
 	<script>
 		if (location.protocol == "http:") {
@@ -623,6 +625,12 @@
 			background: #c9dbe9;
 			padding: 10px;
 		}
+		body,html {
+			width:100vw;
+			height: 100vw;
+			position: fixed;
+		}
+
 
 		#mainc {
 			padding-left: 2vw;
