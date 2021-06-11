@@ -206,7 +206,8 @@ self.addEventListener('message', function(event) {
                                 "coins": cns,
                                 "url": u,
                                 "oldprices": oldprices,
-                                portfolios: portfolios
+                                portfolios: portfolios,
+                                portfolio: portfolio
                             });
 
 
