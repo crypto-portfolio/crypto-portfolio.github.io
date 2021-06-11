@@ -20,6 +20,7 @@
 		var ndigits = 6;
 		var params = [];
 		var url = null;
+		var portfolios = [];
 		// time in which to expect an update
 		var interval = 30000;
 		var spd = 100;
@@ -144,10 +145,12 @@
 					console.log('received last price total: ' + lastprice['total']);
 					params = event.data.coins;
 					url = event.data.url;
+					portfolios = event.data.portfolios;
 					a(true);
 				} else {
 					params = event.data.coins;
 					url = event.data.url;
+					portfolios = event.data.portfolios;
 					a(true);
 				}
 			});
