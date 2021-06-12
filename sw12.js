@@ -178,7 +178,7 @@ self.addEventListener('message', function(event) {
 
                 if(event.target.result && event.target.result[0]){
 
-                    if(portfolio){
+                    if(portfolio || portfolio == ""){
                         for(var i=0; i<event.target.result.length; i++){
                             if(event.target.result[i].portfolio == portfolio){
                                 cns = event.target.result[i];
