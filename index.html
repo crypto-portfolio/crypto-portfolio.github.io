@@ -37,6 +37,18 @@
 
 	
 
+
+		function setPortfolioToUrl(p){
+
+			var c = window.location.href;
+
+			var tempArray = c.split("?");
+			var baseURL = tempArray[0];
+
+			window.location.href = baseURL + '?portfolio=' + p;
+			
+		}
+
 		function swipedetect(el) {
 
 			var touchsurface = document.body,
@@ -114,13 +126,30 @@
 						swipedir = (distY < 0) ? 'up' : 'down' // if dist traveled is negative, it indicates up swipe
 					}
 				
+				var portfolioindex = 0;
 
-				if(swipedir == 'left'){
+				if(portfolios.length > 0){
 
+					for(var i=0; i<portfolios.length; i++){
+						if(portfolios[i] == portfolio){
+							portfolioindex = i;
+						}
+					}
+
+					if(swipedir == 'left'){
+						i = (i - 1 + portfolios.length) % portfolios.length;
+					}
+					else if(swipedir == 'right'){
+						i = (i + 1 + portfolios.length) % portfolios.length;
+					}
+
+					portfolio = portfolios[i];
+
+					setPortfolioToUrl(portfolio);
 				}
-				else if(swipedir == 'right'){
-
-				}
+				
+				
+				
 
 
 				touchsurface.style.position = 'inherit';
