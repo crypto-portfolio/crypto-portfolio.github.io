@@ -262,11 +262,11 @@
 			}
 			for (i = 1; i <= nclouds; i++) {
 				var el = document.getElementsByClassName("x" + i)[0];
-				pp = (((_price['total'] - initialprice['total']) / initialprice['total']) * 4000000) * scales[i];
+				pp = (((_price['total'] - initialprice['total']) / initialprice['total']) * 400000) * scales[i];
 				pp = pp + randomoffsets[i] * 140 + 10000000;
 				newtop = (pp % 140 - 20)+ 'vh'
 				if (!(newtop === el.style.top)) {
-					el.style.top = (pp % 140 - 20).toFixed(0) + 'vh';
+					el.style.top = (pp % 140 - 20) + 'vh';
 				}
 			}
 		}
