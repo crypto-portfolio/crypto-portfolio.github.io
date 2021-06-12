@@ -137,13 +137,13 @@
 					}
 
 					if(swipedir == 'left'){
-						i = (i - 1 + portfolios.length) % portfolios.length;
+						portfolioindex = (portfolioindex + 1 + portfolios.length) % portfolios.length;
 					}
 					else if(swipedir == 'right'){
-						i = (i + 1 + portfolios.length) % portfolios.length;
+						portfolioindex = (portfolioindex - 1 + portfolios.length) % portfolios.length;
 					}
 
-					portfolio = portfolios[i];
+					portfolio = portfolios[portfolioindex];
 
 					setPortfolioToUrl(portfolio);
 				}
