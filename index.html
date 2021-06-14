@@ -194,7 +194,20 @@
 					}, 500);
 				}
 				else if(swipedir == 'right'){
-					setPortfolioToUrl(portfolio);
+					touchsurface.classList.add("swiperight");
+					
+					setTimeout(function(){ 
+						
+						touchsurface.style.position = 'inherit';
+						touchsurface.style.left = 'inherit';
+						touchsurface.style.top = 'inherit';
+						touchsurface.style.width = 'inherit';
+						touchsurface.style.height = 'inherit';
+						touchsurface.classList.remove("swiperight");
+
+						setPortfolioToUrl(portfolio);
+
+					}, 500);
 				}
 				
 
@@ -933,6 +946,11 @@
 
 		.swipeleft {
 			transform: translate(-110vw, 0vw);
+			transition: transform 0.5s	ease-in;
+		}
+
+		.swiperight {
+			transform: translate(110vw, 0vw);
 			transition: transform 0.5s	ease-in;
 		}
 
