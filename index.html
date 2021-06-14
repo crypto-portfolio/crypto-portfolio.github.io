@@ -9,32 +9,35 @@
 		if (location.protocol == "http:") {
 			location.protocol = "https:";
 		}
-		console.log('Initializing parameters');
-		var price = null;
-		var showprice = null;
-		var updateinterval = 10000;
-		var initialprice = null;
-		var fsym = "";
-		var tsyms = null;
-		var coinsowned = [];
-		var ndigits = 6;
-		var params = [];
-		var url = null;
-		var portfolios = [];
-		// time in which to expect an update
-		var interval = 30000;
-		var spd = 100;
-		var dp = [];
-		var newdp = [];
-		var ddp = [];
-		var lastprice = null;
-		var nclouds = 40;
-		var randomoffsets = [];
-		var scales = [];
-		var showtexts = true;
-		var showclouds = true;
-		var sw = null;
+		
 
+		function init(){
+			var price = null;
+			var showprice = null;
+			var updateinterval = 10000;
+			var initialprice = null;
+			var fsym = "";
+			var tsyms = null;
+			var coinsowned = [];
+			var ndigits = 6;
+			var params = [];
+			var url = null;
+			var portfolios = [];
+			var interval = 30000;
+			var spd = 100;
+			var dp = [];
+			var newdp = [];
+			var ddp = [];
+			var lastprice = null;
+			var nclouds = 40;
+			var randomoffsets = [];
+			var scales = [];
+			var showtexts = true;
+			var showclouds = true;
+			var sw = null;
+		}
+		
+		init();
 	
 
 
@@ -48,6 +51,7 @@
 			baseURL = tempArray[0];
 
 			window.location.href = baseURL + '#portfolio=' + p;
+			init();
 			a(false);
 			
 		}
