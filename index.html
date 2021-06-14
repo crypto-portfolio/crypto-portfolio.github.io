@@ -145,7 +145,7 @@
 
 					portfolio = portfolios[portfolioindex];
 
-					setPortfolioToUrl(portfolio);
+					
 				}
 				
 				if(swipedir == 'left'){
@@ -160,11 +160,12 @@
 						touchsurface.style.height = 'inherit';
 						touchsurface.classList.remove("swipeleft");
 
+						setPortfolioToUrl(portfolio);
+
 					}, 500);
-
-
 				}
 				else if(swipedir == 'right'){
+					setPortfolioToUrl(portfolio);
 				}
 				
 
