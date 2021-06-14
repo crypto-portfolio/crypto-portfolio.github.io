@@ -44,8 +44,11 @@
 
 			var tempArray = c.split("?");
 			var baseURL = tempArray[0];
+			tempArray = c.split("#");
+			baseURL = tempArray[0];
 
-			window.location.href = baseURL + '?portfolio=' + p;
+			window.location.href = baseURL + '#portfolio=' + p;
+			a(false);
 			
 		}
 
@@ -329,7 +332,7 @@
 				var myurl = null;
 				var ltsyms = "";
 				var lparams = [];
-				var regex = /[?&]([^=#]+)=([^&#]*)/g,
+				var regex = /[?&#]([^=#]+)=([^&#]*)/g,
 					myurl = window.location.href,
 					match;
 				while (match = regex.exec(myurl)) {
