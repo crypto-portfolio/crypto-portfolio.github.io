@@ -9,32 +9,54 @@
 		if (location.protocol == "http:") {
 			location.protocol = "https:";
 		}
-		
+		var price ;
+		var showprice;
+		var updateinterval;
+		var initialprice;
+		var fsym;
+		var tsyms;
+		var coinsowned;
+		var ndigits;
+		var params;
+		var url;
+		var portfolios;
+		var interval;
+		var spd;
+		var dp;
+		var newdp;
+		var ddp;
+		var lastprice;
+		var nclouds;
+		var randomoffsets;
+		var scales;
+		var showtexts;
+		var showclouds;
+		var sw;
 
 		function init(){
-			var price = null;
-			var showprice = null;
-			var updateinterval = 10000;
-			var initialprice = null;
-			var fsym = "";
-			var tsyms = null;
-			var coinsowned = [];
-			var ndigits = 6;
-			var params = [];
-			var url = null;
-			var portfolios = [];
-			var interval = 30000;
-			var spd = 100;
-			var dp = [];
-			var newdp = [];
-			var ddp = [];
-			var lastprice = null;
-			var nclouds = 40;
-			var randomoffsets = [];
-			var scales = [];
-			var showtexts = true;
-			var showclouds = true;
-			var sw = null;
+			price = null;
+			showprice = null;
+			updateinterval = 10000;
+			initialprice = null;
+			fsym = "";
+			tsyms = null;
+			coinsowned = [];
+			ndigits = 6;
+			params = [];
+			url = null;
+			portfolios = [];
+			interval = 30000;
+			spd = 100;
+			dp = [];
+			newdp = [];
+			ddp = [];
+			lastprice = null;
+			nclouds = 40;
+			randomoffsets = [];
+			scales = [];
+			showtexts = true;
+			showclouds = true;
+			sw = null;
 		}
 		
 		init();
