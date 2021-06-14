@@ -148,15 +148,28 @@
 					setPortfolioToUrl(portfolio);
 				}
 				
-				
+				if(swipedir == 'left'){
+					touchsurface.classList.add("swipeleft");
+					
+					setTimeout(function(){ 
+						
+						touchsurface.style.position = 'inherit';
+						touchsurface.style.left = 'inherit';
+						touchsurface.style.top = 'inherit';
+						touchsurface.style.width = 'inherit';
+						touchsurface.style.height = 'inherit';
+						touchsurface.classList.remove("swipeleft");
+
+					}, 500);
+
+
+				}
+				else if(swipedir == 'right'){
+				}
 				
 
 
-				touchsurface.style.position = 'inherit';
-				touchsurface.style.left = 'inherit';
-				touchsurface.style.top = 'inherit';
-				touchsurface.style.width = 'inherit';
-				touchsurface.style.height = 'inherit';
+				
 
 				e.preventDefault()
 			}, false)
@@ -886,6 +899,14 @@
 		}
 
 		.front.bottom {}
+
+
+		.swipeleft {
+			transform: translate(-110vw, 0vw);
+			transition: transform 0.5s	ease-in;
+		}
+
+
 
 		.top.front.rotup.rotend {
 			transform: rotate3d(1, 0, 0, -90deg);
