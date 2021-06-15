@@ -57,9 +57,14 @@
 			showtexts = true;
 			showclouds = true;
 			sw = null;
+
+			for (i = 0; i < nclouds; i++) {
+				randomoffsets.push(Math.random());
+				scales.push(Math.random() * 1.9 + 0.2);
+			}
 		}
 
-		function initClouds(){
+		function initClouds() {
 			for (var i = 1; i <= nclouds; i++) {
 				setAnimation(i, 10);
 			}
@@ -315,10 +320,7 @@
 				}
 			}
 		});
-		for (i = 0; i < nclouds; i++) {
-			randomoffsets.push(Math.random());
-			scales.push(Math.random() * 1.9 + 0.2);
-		}
+
 
 		function current() {
 			if (price != null) {
@@ -733,13 +735,13 @@
 			requestAnimationFrame(b);
 		}
 
-		
+
 		window.onload = function () {
 
 			swipedetect(document.getElementById('content'));
 
 			initClouds();
-			
+
 
 			requestAnimationFrame(b);
 			return;
