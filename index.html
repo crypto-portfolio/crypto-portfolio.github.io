@@ -59,6 +59,12 @@
 			sw = null;
 		}
 
+		function initClouds(){
+			for (var i = 1; i <= nclouds; i++) {
+				setAnimation(i, 10);
+			}
+		}
+
 		init();
 
 
@@ -74,6 +80,7 @@
 
 			window.location.href = baseURL + '#portfolio=' + p;
 			init();
+			initClouds();
 			a(false);
 
 		}
@@ -725,14 +732,15 @@
 			animateStep(showprice, dp);
 			requestAnimationFrame(b);
 		}
+
+		
 		window.onload = function () {
 
 			swipedetect(document.getElementById('content'));
 
+			initClouds();
+			
 
-			for (var i = 1; i <= nclouds; i++) {
-				setAnimation(i, 10);
-			}
 			requestAnimationFrame(b);
 			return;
 			if ("WebSocket" in window) {
