@@ -60,13 +60,24 @@
 
 			for (i = 0; i < nclouds; i++) {
 				randomoffsets.push(Math.random());
-				scales.push(Math.random() * 1.9 + 0.2);
+
+				scales.push(getRandomCloudScale());
 			}
+		}
+
+		function getRandomCloudScale(){
+			return (.1 / (Math.random() + 0.01)) * 1 + 0.2;
 		}
 
 		function initClouds() {
 			for (var i = 1; i <= nclouds; i++) {
-				setAnimation(i, 10);
+
+				
+				setAnimation(i);
+				var el = document.getElementsByClassName("x" + i)[0];
+
+				el.style.top = Math.random() * 100 + 'vh';
+				
 			}
 		}
 
@@ -332,26 +343,23 @@
 			}
 		}
 
-		function setAnimation(index, speed) {
+		function setAnimation(index) {
 
 
 			var scale = scales[index];
-			speed = (speed / scale) * 3;
-			var css = '.x' + index + ' {left: ' + (index - 2) * (110 / nclouds) + 'vw;' + '-webkit-transform: scale(' + scale + ');' + '-moz-transform: scale(' + scale + ');' + 'transform: scale(' + scale + ');opacity: ' + scale + ';}',
-				head = document.head || document.getElementsByTagName('head')[0],
-				style = document.createElement('style');
-			style.type = 'text/css';
-			if (style.styleSheet) {
-				style.styleSheet.cssText = css;
-			} else {
-				style.appendChild(document.createTextNode(css));
-			}
-			head.appendChild(style);
+			var speed = (10 / scale) * 3;
+			
+
+			var el = document.getElementsByClassName("x" + index)[0];
+
+			el.style.left = (index - 2) * (110 / nclouds) + 'vw';
+			el.style.transform = 'scale(' + scale + ')';
+			el.style.opacity = scale;
+			
+			
 		}
 
 		function animateStep(_price, _dp) {
-
-
 
 			if (!showclouds) {
 				return;
@@ -361,11 +369,36 @@
 			}
 			for (i = 1; i <= nclouds; i++) {
 				var el = document.getElementsByClassName("x" + i)[0];
-				pp = (((_price['total'] - initialprice['total']) / initialprice['total']) * 400000) * scales[i];
-				pp = pp + randomoffsets[i] * 140 + 10000000;
-				newtop = (pp % 140 - 20) + 'vh'
+				
+				
+				var ptop = Number(el.style.top.replace('vh', ''));
+				
+
+				var dpt = dp['total'];
+				
+
+				var d = scales[i] * 10000000 * dpt / initialprice['total'];
+				
+				var newtop = ptop + d;
+				var newbottom = ptop + d + 100*el.offsetHeight/document.body.offsetHeight;
+
+
+				if(newtop > 100 && dpt > 0){
+					scales[i] = getRandomCloudScale();
+					setAnimation(i);
+					newtop = 100*(-el.offsetHeight/document.body.offsetHeight)
+				}
+
+				if(newbottom < 0 && dpt < 0){
+					scales[i] = getRandomCloudScale();
+					setAnimation(i);
+					newtop = 100;
+				}
+
 				if (!(newtop === el.style.top)) {
-					el.style.top = (pp % 140 - 20) + 'vh';
+
+					
+					el.style.top = newtop + 'vh';
 				}
 			}
 		}
