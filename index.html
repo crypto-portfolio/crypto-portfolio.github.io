@@ -378,26 +378,26 @@
 				
 
 				var d = scales[i] * 1000000 * dpt / initialprice['total'];
+
+				var estimatedCloudHeight = document.body.offsetWidth * 6 * scales[i]  / 100;
 				
 				var newtop = ptop + d;
 				var newbottom = ptop + d + 100*el.offsetHeight/document.body.offsetHeight;
 
 
-				if(newtop > 100 && dpt > 0){
+				if(newtop - estimatedCloudHeight > 100 && dpt > 0){
 					scales[i] = getRandomCloudScale();
 					setAnimation(i);
 					newtop = 100*(-el.offsetHeight/document.body.offsetHeight)
 				}
 
-				if(newbottom < 0 && dpt < 0){
+				if(newbottom + estimatedCloudHeight < 0 && dpt < 0){
 					scales[i] = getRandomCloudScale();
 					setAnimation(i);
 					newtop = 100;
 				}
 
 				if (!(newtop === el.style.top)) {
-
-					
 					el.style.top = newtop + 'vh';
 				}
 			}
