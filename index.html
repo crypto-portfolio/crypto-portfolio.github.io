@@ -10,6 +10,7 @@
 			location.protocol = "https:";
 		}
 		var price;
+		var editmode;
 		var showprice;
 		var updateinterval;
 		var initialprice;
@@ -57,6 +58,7 @@
 			showtexts = true;
 			showclouds = true;
 			sw = null;
+			editmode = false;
 
 			for (i = 0; i < nclouds; i++) {
 				randomoffsets.push(Math.random());
@@ -65,19 +67,19 @@
 			}
 		}
 
-		function getRandomCloudScale(){
+		function getRandomCloudScale() {
 			return (.1 / (Math.random() + 0.01)) * 1 + 0.2;
 		}
 
 		function initClouds() {
 			for (var i = 1; i <= nclouds; i++) {
 
-				
+
 				setAnimation(i);
 				var el = document.getElementsByClassName("x" + i)[0];
 
 				el.style.top = Math.random() * 100 + 'vh';
-				
+
 			}
 		}
 
@@ -100,6 +102,104 @@
 			a(false);
 
 		}
+
+		function toggleEditMode() {
+			editmode = !editmode;
+
+
+		}
+		function swipe(swipedir, touchsurface) {
+			var portfolioindex = 0;
+
+			if (portfolios.length > 0) {
+
+				for (var i = 0; i < portfolios.length; i++) {
+					if (portfolios[i] == portfolio) {
+						portfolioindex = i;
+					}
+				}
+
+				if (swipedir == 'left') {
+					portfolioindex = (portfolioindex + 1 + portfolios.length) % portfolios.length;
+				}
+				else if (swipedir == 'right') {
+					portfolioindex = (portfolioindex - 1 + portfolios.length) % portfolios.length;
+				}
+
+				portfolio = portfolios[portfolioindex];
+
+
+			}
+
+			if (swipedir == 'left') {
+				touchsurface.classList.add("swipeleft");
+
+				setTimeout(function () {
+
+					touchsurface.classList.remove("swipeleft");
+					touchsurface.style.left = '100vw';
+
+					setTimeout(function () {
+
+						touchsurface.classList.add("swipeleftin");
+
+
+					}, 25);
+
+
+					setPortfolioToUrl(portfolio);
+
+					setTimeout(function () {
+
+						touchsurface.style.position = 'inherit';
+						touchsurface.style.left = 'inherit';
+						touchsurface.style.top = 'inherit';
+						touchsurface.style.width = 'inherit';
+						touchsurface.style.height = 'inherit';
+						touchsurface.classList.remove("swipeleftin");
+
+
+					}, 250);
+
+
+				}, 250);
+			}
+			else if (swipedir == 'right') {
+				touchsurface.classList.add("swiperight");
+
+				setTimeout(function () {
+
+					touchsurface.classList.remove("swiperight");
+					touchsurface.style.left = '-100vw';
+
+					setTimeout(function () {
+
+						touchsurface.classList.add("swiperightin");
+
+
+					}, 25);
+
+
+					setPortfolioToUrl(portfolio);
+
+					setTimeout(function () {
+
+						touchsurface.style.position = 'inherit';
+						touchsurface.style.left = 'inherit';
+						touchsurface.style.top = 'inherit';
+						touchsurface.style.width = 'inherit';
+						touchsurface.style.height = 'inherit';
+						touchsurface.classList.remove("swiperightin");
+
+
+					}, 250);
+
+
+				}, 250);
+			}
+
+		}
+
 
 		function swipedetect(el) {
 
@@ -166,7 +266,11 @@
 				e.preventDefault() // prevent scrolling when inside DIV
 			}, false)
 
+
+
 			touchsurface.addEventListener('touchend', function (e) {
+
+
 				var touchobj = e.changedTouches[0]
 				distX = touchobj.pageX - startX // get horizontal dist traveled by finger while in contact with surface
 				distY = touchobj.pageY - startY // get vertical dist traveled by finger while in contact with surface
@@ -178,96 +282,8 @@
 					swipedir = (distY < 0) ? 'up' : 'down' // if dist traveled is negative, it indicates up swipe
 				}
 
-				var portfolioindex = 0;
 
-				if (portfolios.length > 0) {
-
-					for (var i = 0; i < portfolios.length; i++) {
-						if (portfolios[i] == portfolio) {
-							portfolioindex = i;
-						}
-					}
-
-					if (swipedir == 'left') {
-						portfolioindex = (portfolioindex + 1 + portfolios.length) % portfolios.length;
-					}
-					else if (swipedir == 'right') {
-						portfolioindex = (portfolioindex - 1 + portfolios.length) % portfolios.length;
-					}
-
-					portfolio = portfolios[portfolioindex];
-
-
-				}
-
-				if (swipedir == 'left') {
-					touchsurface.classList.add("swipeleft");
-
-					setTimeout(function () {
-
-						touchsurface.classList.remove("swipeleft");
-						touchsurface.style.left = '100vw';
-
-						setTimeout(function () {
-
-							touchsurface.classList.add("swipeleftin");
-
-
-						}, 25);
-
-
-						setPortfolioToUrl(portfolio);
-
-						setTimeout(function () {
-
-							touchsurface.style.position = 'inherit';
-							touchsurface.style.left = 'inherit';
-							touchsurface.style.top = 'inherit';
-							touchsurface.style.width = 'inherit';
-							touchsurface.style.height = 'inherit';
-							touchsurface.classList.remove("swipeleftin");
-
-
-						}, 250);
-
-
-					}, 250);
-				}
-				else if (swipedir == 'right') {
-					touchsurface.classList.add("swiperight");
-
-					setTimeout(function () {
-
-						touchsurface.classList.remove("swiperight");
-						touchsurface.style.left = '-100vw';
-
-						setTimeout(function () {
-
-							touchsurface.classList.add("swiperightin");
-
-
-						}, 25);
-
-
-						setPortfolioToUrl(portfolio);
-
-						setTimeout(function () {
-
-							touchsurface.style.position = 'inherit';
-							touchsurface.style.left = 'inherit';
-							touchsurface.style.top = 'inherit';
-							touchsurface.style.width = 'inherit';
-							touchsurface.style.height = 'inherit';
-							touchsurface.classList.remove("swiperightin");
-
-
-						}, 250);
-
-
-					}, 250);
-				}
-
-
+				swipe(swipedir, touchsurface);
 
 
 
@@ -275,7 +291,18 @@
 			}, false)
 		}
 
+		function setPortfolios(p){
+			portfolios = p;
 
+			if(portfolios && portfolios.length > 1){
+				document.getElementsByClassName('swipeleft')[0].style.display = 'block';
+				document.getElementsByClassName('swiperight')[0].style.display = 'block';
+			}
+			else{
+				document.getElementsByClassName('swipeleft')[0].style.display = 'none';
+				document.getElementsByClassName('swiperight')[0].style.display = 'none';
+			}
+		}
 
 
 		console.log('Check service worker');
@@ -287,13 +314,13 @@
 					console.log('received last price total: ' + lastprice['total']);
 					params = event.data.coins;
 					url = event.data.url;
-					portfolios = event.data.portfolios;
+					setPortfolios(event.data.portfolios);
 					portfolio = event.data.portfolio;
 					a(true);
 				} else {
 					params = event.data.coins;
 					url = event.data.url;
-					portfolios = event.data.portfolios;
+					setPortfolios(event.data.portfolios);
 					portfolio = event.data.portfolio;
 					a(true);
 				}
@@ -348,15 +375,15 @@
 
 			var scale = scales[index];
 			var speed = (10 / scale) * 3;
-			
+
 
 			var el = document.getElementsByClassName("x" + index)[0];
 
 			el.style.left = (index - 2) * (110 / nclouds) + 'vw';
 			el.style.transform = 'scale(' + scale + ')';
 			el.style.opacity = scale;
-			
-			
+
+
 		}
 
 		function animateStep(_price, _dp) {
@@ -369,29 +396,29 @@
 			}
 			for (i = 1; i <= nclouds; i++) {
 				var el = document.getElementsByClassName("x" + i)[0];
-				
-				
+
+
 				var ptop = Number(el.style.top.replace('vh', ''));
-				
+
 
 				var dpt = dp['total'];
-				
+
 
 				var d = scales[i] * 1000000 * dpt / initialprice['total'];
 
-				var estimatedCloudHeight = document.body.offsetWidth * 6 * scales[i]  / 100;
-				
+				var estimatedCloudHeight = document.body.offsetWidth * 6 * scales[i] / 100;
+
 				var newtop = ptop + d;
-				var newbottom = ptop + d + 100*el.offsetHeight/document.body.offsetHeight;
+				var newbottom = ptop + d + 100 * el.offsetHeight / document.body.offsetHeight;
 
 
-				if(newtop - estimatedCloudHeight > 100 && dpt > 0){
+				if (newtop - estimatedCloudHeight > 100 && dpt > 0) {
 					scales[i] = getRandomCloudScale();
 					setAnimation(i);
-					newtop = 100*(-el.offsetHeight/document.body.offsetHeight)
+					newtop = 100 * (-el.offsetHeight / document.body.offsetHeight)
 				}
 
-				if(newbottom + estimatedCloudHeight < 0 && dpt < 0){
+				if (newbottom + estimatedCloudHeight < 0 && dpt < 0) {
 					scales[i] = getRandomCloudScale();
 					setAnimation(i);
 					newtop = 100;
@@ -814,7 +841,10 @@
 		body {
 			overflow: hidden;
 			background: #c9dbe9;
-			padding: 1vw;
+			padding-left: 5vw;
+			padding-right: 5vw;
+			padding-top: 2vw;
+			padding-bottom: 2vw;
 		}
 
 		body,
@@ -1104,10 +1134,142 @@
 		.count.changed .bottom.back {
 			display: none;
 		}
+
+
+
+
+
+		.plus.icon {
+			color: #000;
+			position: absolute;
+			margin-left: 3vw;
+			margin-top: 10vw;
+		}
+
+		.plus.icon:before {
+			content: '';
+			position: absolute;
+			width: vwpx;
+			height: 1vw;
+			background-color: currentColor;
+		}
+
+		.plus.icon:after {
+			content: '';
+			position: absolute;
+			width: 15vw;
+			height: 1vw;
+			background-color: currentColor;
+			-webkit-transform: rotate(90deg);
+			transform: rotate(90deg);
+		}
+
+
+		.swipe_left.icon {
+			color: #000;
+			position: fixed;
+			left: 1vw;
+			top: 46vh;
+			margin-left: 3px;
+			margin-top: 6px;
+			cursor: pointer;
+		}
+
+		.swipe_right.icon {
+			color: #000;
+			position: fixed;
+			right: 6vw;
+			top: 46vh;
+			margin-left: 3px;
+			margin-top: 6px;
+			cursor: pointer;
+		}
+
+		.swipe_left.icon:before {
+			content: '';
+			position: absolute;
+			width: 2vw;
+			height: 2vw;
+			border-left: solid 1vw rgb(0, 0, 0, .2);
+			border-top: solid 1vw rgb(0, 0, 0, .2);
+			-webkit-transform: rotate(-45deg);
+			transform: rotate(-45deg);
+		}
+
+		.swipe_right.icon:after {
+			content: '';
+			position: absolute;
+			left: 1.5vw;
+			width: 2vw;
+			height: 2vw;
+			border-bottom: solid 1vw rgb(0, 0, 0, .2);
+			border-right: solid 1vw rgb(0, 0, 0, .2);
+			-webkit-transform: rotate(-45deg);
+			transform: rotate(-45deg);
+		}
+
+
+
+
+
+
+		.remove.icon {
+			color: #000;
+			position: absolute;
+			margin-left: 0.6vw;
+			margin-top: 2vw;
+		}
+
+		.remove.icon:before {
+			content: '';
+			position: absolute;
+			width: 3vw;
+			height: 0.2vw;
+			background-color: currentColor;
+			-webkit-transform: rotate(45deg);
+			transform: rotate(45deg);
+		}
+
+		.remove.icon:after {
+			content: '';
+			position: absolute;
+			width: 3vw;
+			height: 0.2vw;
+			background-color: currentColor;
+			-webkit-transform: rotate(-45deg);
+			transform: rotate(-45deg);
+		}
+
+
+
+		.icon_button {
+			border: 1px solid black;
+			position: fixed;
+			top: 5px;
+			right: 5px;
+			width: 4.2vw;
+			height: 4.2vw;
+			box-shadow: 0 .1vw .6vw rgba(0, 0, 0, 0.12), 0 .1vw .4vw rgba(0, 0, 0, 0.44);
+			cursor: pointer;
+
+		}
 	</style>
 </head>
 
 <body onkeydown="current()">
+
+
+	<div class="swipe_left icon" onclick="swipe('left', document.body)"></div>
+	<div class="swipe_right icon" onclick="swipe('right', document.body)"></div>
+
+	<!--
+	<div class="icon_button" onclick="toggleEditMode()">
+		<div class="remove icon"></div>
+	</div>
+
+-->
+
+
 	<div id="clouds">
 		<div class="cloud x1"></div>
 		<div class="cloud x2"></div>
