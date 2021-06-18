@@ -108,6 +108,9 @@
 
 
 		}
+
+
+		
 		function swipe(swipedir, touchsurface) {
 			var portfolioindex = 0;
 
@@ -151,12 +154,7 @@
 
 					setTimeout(function () {
 
-						touchsurface.style.position = 'inherit';
-						touchsurface.style.left = 'inherit';
-						touchsurface.style.top = 'inherit';
-						touchsurface.style.width = 'inherit';
-						touchsurface.style.height = 'inherit';
-						touchsurface.classList.remove("swipeleftin");
+						resetswipes(touchsurface);
 
 
 					}, 250);
@@ -184,12 +182,63 @@
 
 					setTimeout(function () {
 
-						touchsurface.style.position = 'inherit';
-						touchsurface.style.left = 'inherit';
-						touchsurface.style.top = 'inherit';
-						touchsurface.style.width = 'inherit';
-						touchsurface.style.height = 'inherit';
-						touchsurface.classList.remove("swiperightin");
+						resetswipes(touchsurface);
+
+
+					}, 250);
+
+
+				}, 250);
+			}
+			else if (swipedir == 'up') {
+				touchsurface.classList.add("swipeup");
+
+				setTimeout(function () {
+
+					touchsurface.classList.remove("swipeup");
+					touchsurface.style.top = '100vh';
+
+					setTimeout(function () {
+
+						touchsurface.classList.add("swipeupin");
+
+
+					}, 25);
+
+
+					
+
+					setTimeout(function () {
+
+						resetswipes(touchsurface);
+
+
+					}, 250);
+
+
+				}, 250);
+			}
+			else if (swipedir == 'down') {
+				touchsurface.classList.add("swipedown");
+
+				setTimeout(function () {
+
+					touchsurface.classList.remove("swipedown");
+					touchsurface.style.top = '-100vh';
+
+					setTimeout(function () {
+
+						touchsurface.classList.add("swipedownin");
+
+
+					}, 25);
+
+
+					
+
+					setTimeout(function () {
+
+						resetswipes(touchsurface);
 
 
 					}, 250);
@@ -226,7 +275,7 @@
 				contentWidth = touchsurface.offsetWidth;
 				contentHeight = touchsurface.offsetHeight;
 				touchsurface.style.position = 'fixed';
-				
+
 				var touchobj = e.changedTouches[0]
 				swipedir = 'none'
 				dist = 0
@@ -280,18 +329,13 @@
 					swipedir = (distY < 0) ? 'up' : 'down' // if dist traveled is negative, it indicates up swipe
 				}
 
-				if(swipedir){
+				if (swipedir) {
 					swipe(swipedir, touchsurface);
 				}
-				else{
-					touchsurface.style.position = 'inherit';
-					touchsurface.style.left = 'inherit';
-					touchsurface.style.top = 'inherit';
-					touchsurface.style.width = 'inherit';
-					touchsurface.style.height = 'inherit';
-					touchsurface.classList.remove("swipeleftin");
+				else {
+					resetswipes(touchsurface);
 				}
-				
+
 
 
 
@@ -299,17 +343,33 @@
 			}, false)
 		}
 
-		function setPortfolios(p){
+		function resetswipes(el) {
+			el.style.position = 'inherit';
+			el.style.left = 'inherit';
+			el.style.top = 'inherit';
+			el.style.width = 'inherit';
+			el.style.height = 'inherit';
+			el.classList.remove("swipeleftin");
+			el.classList.remove("swiperightin");
+			el.classList.remove("swipeupin");
+			el.classList.remove("swipedownin");
+			el.classList.remove("swipeleft");
+			el.classList.remove("swiperight");
+			el.classList.remove("swipeup");
+			el.classList.remove("swipedown");
+		}
+
+		function setPortfolios(p) {
 			document.getElementsByClassName('swipe_left')[0].style.display = 'block';
-				document.getElementsByClassName('swipe_right')[0].style.display = 'block';
+			document.getElementsByClassName('swipe_right')[0].style.display = 'block';
 
 			portfolios = p;
 
-			if(portfolios && portfolios.length > 1){
+			if (portfolios && portfolios.length > 1) {
 				document.getElementsByClassName('swipe_left')[0].style.display = 'block';
 				document.getElementsByClassName('swipe_right')[0].style.display = 'block';
 			}
-			else{
+			else {
 				document.getElementsByClassName('swipe_left')[0].style.display = 'none';
 				document.getElementsByClassName('swipe_right')[0].style.display = 'none';
 			}
@@ -1075,6 +1135,17 @@
 			transition: transform 0.25s ease-in;
 		}
 
+		.swipeup {
+			transform: translate(0vh, -110vh);
+			transition: transform 0.25s ease-in;
+		}
+
+		.swipeupin {
+
+			transform: translate(0vh, -100vh);
+			transition: transform 0.25s ease-in;
+		}
+
 		.swiperight {
 			transform: translate(110vw, 0vw);
 			transition: transform 0.25s ease-in;
@@ -1082,6 +1153,16 @@
 
 		.swiperightin {
 			transform: translate(100vw, 0vw);
+			transition: transform 0.25s ease-in;
+		}
+
+		.swipedown {
+			transform: translate(0vw, 110vh);
+			transition: transform 0.25s ease-in;
+		}
+
+		.swipedownin {
+			transform: translate(0vw, 100vh);
 			transition: transform 0.25s ease-in;
 		}
 
@@ -1272,8 +1353,9 @@
 <body onkeydown="current()">
 
 
-	<div class="swipe_left icon"  ontouchend ="swipe('left', document.body)" onclick="swipe('left', document.body)"></div>
-	<div class="swipe_right icon" ontouchend ="swipe('right', document.body)"  onclick="swipe('right', document.body)"></div>
+	<div class="swipe_left icon" ontouchend="swipe('left', document.body)" onclick="swipe('left', document.body)"></div>
+	<div class="swipe_right icon" ontouchend="swipe('right', document.body)" onclick="swipe('right', document.body)">
+	</div>
 
 	<!--
 	<div class="icon_button" onclick="toggleEditMode()">
