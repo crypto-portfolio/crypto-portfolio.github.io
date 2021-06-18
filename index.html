@@ -270,7 +270,7 @@
 
 			touchsurface.addEventListener('touchend', function (e) {
 
-
+				var swipedir = null;
 				var touchobj = e.changedTouches[0]
 				distX = touchobj.pageX - startX // get horizontal dist traveled by finger while in contact with surface
 				distY = touchobj.pageY - startY // get vertical dist traveled by finger while in contact with surface
@@ -282,8 +282,10 @@
 					swipedir = (distY < 0) ? 'up' : 'down' // if dist traveled is negative, it indicates up swipe
 				}
 
-
-				swipe(swipedir, touchsurface);
+				if(swipedir){
+					swipe(swipedir, touchsurface);
+				}
+				
 
 
 
@@ -292,6 +294,9 @@
 		}
 
 		function setPortfolios(p){
+			document.getElementsByClassName('swipe_left')[0].style.display = 'block';
+				document.getElementsByClassName('swipe_right')[0].style.display = 'block';
+
 			portfolios = p;
 
 			if(portfolios && portfolios.length > 1){
@@ -1173,6 +1178,7 @@
 			margin-left: 3px;
 			margin-top: 6px;
 			cursor: pointer;
+			display: none;
 		}
 
 		.swipe_right.icon {
@@ -1183,6 +1189,7 @@
 			margin-left: 3px;
 			margin-top: 6px;
 			cursor: pointer;
+			display: none;
 		}
 
 		.swipe_left.icon:before {
