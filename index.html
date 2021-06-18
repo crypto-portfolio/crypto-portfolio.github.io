@@ -285,6 +285,14 @@
 				if(swipedir){
 					swipe(swipedir, touchsurface);
 				}
+				else{
+					touchsurface.style.position = 'inherit';
+					touchsurface.style.left = 'inherit';
+					touchsurface.style.top = 'inherit';
+					touchsurface.style.width = 'inherit';
+					touchsurface.style.height = 'inherit';
+					touchsurface.classList.remove("swipeleftin");
+				}
 				
 
 
